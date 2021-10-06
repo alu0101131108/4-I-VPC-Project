@@ -1,0 +1,56 @@
+html, body {
+  padding: 0;
+}
+
+#canvas {
+  display:block;
+  width:100%;
+  margin: 0;
+}
+
+#title {
+  text-align: center;
+  background-color: pink;
+  font-weight: bold;
+  margin: auto;
+  width: 50%;
+}
+
+#buttons {
+  display: block;
+  margin-top: 35%;
+  text-align: center;
+}
+
+#chartboxes {
+  display: none;
+  text-align: center;
+}
+
+#original-chartbox {
+  text-align: center;
+  padding: 10vh;
+  height: 800px;
+}
+
+#target-chartbox {
+  display: none;
+  padding: 10vh;
+  text-align: center;
+  height: 800px;
+}
+
+#original-chart {
+  background:  white;
+  border: solid black 1px;
+}
+
+#target-chart {
+  background:  white;
+  border: solid black 1px;
+}
+
+#canvas h1 {
+  display: inline;
+  margin-left: 28%;
+}

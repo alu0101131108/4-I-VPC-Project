@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sketch</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="libraries/p5.min.js" defer></script>
+    <script type="module" src="sketch.js" defer></script>
+  </head>
+
+  <body>
+    <div id="title">
+      <h1>Proyecto VPC</h1>
+    </div>
+    <div id="canvas">
+      <h1 id = "original">Original</h1>
+      <h1 id = "result">Resultado</h1>
+    </div>
+    <div id="buttons">
+      <button id = "download"> Descargar </button>
+      <input type = "file" id = "fileUpload">
+      <button id = "toggleCharts"> Mostrar/Ocultar gráficas </button>
+    </div>
+    <div id = "chartboxes">
+      <input type = "radio" name = "choice" value = "regularHist" id = "choice-reg" checked>
+      <label for = "choice-reg"> Histograma </label> 
+      <input type = "radio" name = "choice" value = "accHist" id = "choice-acc">
+      <label for = "choice-acc"> Histograma acumulativo </label> 
+      <div id = "original-chartbox">
+        <h3>Histograma de la imagen original:</h3>
+        <canvas id="original-chart" width="10" height="10"></canvas>
+      </div>
+      <div id="target-chartbox">
+        <h3>Histograma de la imagen resultado:</h3>
+        <canvas id="target-chart" width="10" height="10"></canvas>
+      </div>
+    </div>
+  </body>
+</html>
