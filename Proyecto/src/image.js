@@ -51,6 +51,21 @@ class sebaImage {
     }
     return accumulativeIntensityFrequency;
   }
+
+  // Aplica cambios a la imagen original tambien, esto se puede arreglar modificando clase image y creando mas constructores de copia.
+  greyscale() {
+    this.associatedImage.loadPixels();
+    let originalPixels = this.associatedImage.pixels;
+
+    for (let i = 0; i < originalPixels.length; i = i + 4) {
+      let ntscGreyValue = 0.299 * originalPixels[i] + 0.587 * originalPixels[i + 1] + 0.114 * originalPixels[i + 2];
+      this.associatedImage.pixels[i] = ntscGreyValue;
+      this.associatedImage.pixels[i + 1] = ntscGreyValue;
+      this.associatedImage.pixels[i + 2] = ntscGreyValue;
+    }
+
+    this.associatedImage.updatePixels();
+  }
   
 }
 

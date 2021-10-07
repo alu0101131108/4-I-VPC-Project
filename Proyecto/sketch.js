@@ -21,7 +21,6 @@ function setupButtons() {
   // Download button.
   document.getElementById('download').onclick = () => {
     if (target) target.download();
-    target = original; // TEMPORAL
   };
   
   // Upload button.
@@ -55,6 +54,12 @@ function setupButtons() {
     generateHistogram(0, 1);
     if (target) generateHistogram(1, 1);
   });
+
+  // General transform to orignal image.
+  document.getElementById('general-transform').onclick =  () => {
+    target = original;
+    target.greyscale();
+  };
 }
 
 function setup() {
@@ -157,3 +162,5 @@ function generateHistogram(imgOption, histType) {
 window.preload = preload;
 window.setup = setup;
 window.draw = draw;
+
+// samplavigne.p5-vscode
