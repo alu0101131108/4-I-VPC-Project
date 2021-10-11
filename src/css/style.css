@@ -16,9 +16,19 @@ html, body {
   width: 50%;
 }
 
-#buttons {
+#main-menu {
   display: block;
   margin-top: 35%;
+  text-align: center;
+}
+
+#operations {
+  display: none;
+  text-align: center;
+}
+
+#information {
+  display: none;
   text-align: center;
 }
 

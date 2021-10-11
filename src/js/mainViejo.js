@@ -1,5 +1,7 @@
-import {sebaImage} from './src/image.js';
-import '../libraries/chart.min.js';
+import './ipApp.js';
+import {IpImage} from './ipImage.js';
+import './../../libraries/chart.min.js';
+import './../../libraries/p5.min.js';
 
 const RED = 0;
 const GREEN = 1;
@@ -7,14 +9,13 @@ const BLUE = 2;
 let original, target, renderer, originalChart, targetChart;
 
 function preload() {
-  original = new sebaImage('../images/landscape.jpg');
+  original = new IpImage('./../../images/landscape.jpg');
 }
 
 function resetCanvas() {
   // Create canvas.
   renderer = createCanvas(original.getWidth() * 2, original.getHeight());
   renderer.parent(document.getElementById('canvas'));
-  target = undefined;
 }
 
 function setupButtons() {
@@ -55,7 +56,7 @@ function setupButtons() {
     if (target) generateHistogram(1, 1);
   });
 
-  // General transform to orignal image.
+  // General transform to original image.
   document.getElementById('general-transform').onclick =  () => {
     target = original;
     target.greyscale();
@@ -82,7 +83,8 @@ function changeImg() {
     reader.onload = (e) => {
       const newImg = new Image();
       newImg.addEventListener('load', () => {
-        original = new sebaImage(newImg.src);
+        original = new IpImage(newImg.src);
+        target = undefined;
         setTimeout(resetCanvas, 50);
       });
       newImg.src = e.target.result;
@@ -162,5 +164,3 @@ function generateHistogram(imgOption, histType) {
 window.preload = preload;
 window.setup = setup;
 window.draw = draw;
-
-// samplavigne.p5-vscode

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Visión Por Computador</title>
+
+    <link rel="stylesheet" type="text/css" href="./../css/style.css">
+    <script type="module" src="./../js/main.js" defer></script>
+  </head>
+
+  <body>
+    <div id="title">
+      <h1>Proyecto VPC</h1>
+    </div>
+
+    <div id="canvas">
+      <h1 id = "original">Original</h1>
+      <h1 id = "result">Resultado</h1>
+    </div>
+
+    <div id="main-menu">
+      <button id = "save-btn"> Guardar </button>
+      <input type = "file" id = "fileUpload-btn">
+      <button id = "roi-btn"> Seleccionar ROI</button>
+      <button id = "showInfo-btn"> Mostrar/Ocultar Información </button>
+      <button id = "showOperation-btn"> Mostrar/Ocultar Operaciones </button>
+    </div>
+
+    <div id = "operations">
+      <button id = "greyscale-btn"> Escala de grises </button>
+    </div>
+
+    <div id = "information">
+
+        <ul>
+          <li id="extension"></li>
+          <li id="size"></li>
+          <li id="colorRange"></li>
+          <li id="bright"></li>
+          <li id="contrast"></li>
+          <li id="entropy"></li>
+          <li id="mouseXY"></li>
+          <li id="pixelValues"></li>
+        </ul>
+
+      
+      <div id = "chartboxes">
+        <input type = "radio" name = "choice" value = "regularHist" id = "choice-reg" checked>
+        <label for = "choice-reg"> Histograma </label> 
+        <input type = "radio" name = "choice" value = "accHist" id = "choice-acc">
+        <label for = "choice-acc"> Histograma acumulativo </label> 
+        <div id = "original-chartbox">
+          <h3>Histograma de la imagen original:</h3>
+          <canvas id="original-chart" width="10" height="10"></canvas>
+        </div>
+        <div id="target-chartbox">
+          <h3>Histograma de la imagen resultado:</h3>
+          <canvas id="target-chart" width="10" height="10"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
