@@ -54,19 +54,19 @@ class IpImage {
   }
 
   // Esto nose si deberia ir aqui la vd.
-  greyscale() {
-    this.p5Image.loadPixels();
-    let originalPixels = this.p5Image.pixels;
+  // greyscale() {
+  //   this.p5Image.loadPixels();
+  //   let originalPixels = this.p5Image.pixels;
 
-    for (let i = 0; i < originalPixels.length; i = i + 4) {
-      let ntscGreyValue = 0.299 * originalPixels[i] + 0.587 * originalPixels[i + 1] + 0.114 * originalPixels[i + 2];
-      this.p5Image.pixels[i] = ntscGreyValue;
-      this.p5Image.pixels[i + 1] = ntscGreyValue;
-      this.p5Image.pixels[i + 2] = ntscGreyValue;
-    }
+  //   for (let i = 0; i < originalPixels.length; i = i + 4) {
+  //     let ntscGreyValue = 0.299 * originalPixels[i] + 0.587 * originalPixels[i + 1] + 0.114 * originalPixels[i + 2];
+  //     this.p5Image.pixels[i] = ntscGreyValue;
+  //     this.p5Image.pixels[i + 1] = ntscGreyValue;
+  //     this.p5Image.pixels[i + 2] = ntscGreyValue;
+  //   }
 
-    this.p5Image.updatePixels();
-  }
+  //   this.p5Image.updatePixels();
+  // }
   
 }
 

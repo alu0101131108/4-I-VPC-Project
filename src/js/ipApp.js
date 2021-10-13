@@ -24,6 +24,7 @@ class IpApp {
   }
   
   draw() {
+    this.model.updateInputData(mouseX, mouseY);
     this.updateView();
   }
 
@@ -34,7 +35,7 @@ class IpApp {
         save(this.model.target.p5Image,'download.png');
     };
 
-    // TODO: Upload button.
+    // TODO: Open button.
     // TODO: ROI button.
     
     // Toggle operations button.
@@ -60,7 +61,8 @@ class IpApp {
   }
 
   updateView() {
-    this.view.update(this.model.original, this.model.target);
+    this.view.updateImages(this.model.original, this.model.target);
+    this.view.updateInfo(this.model.original, this.model.inputData);
   }
   
 }
