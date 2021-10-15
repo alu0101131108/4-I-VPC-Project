@@ -21,19 +21,45 @@ class IpModel {
   }
 
   updateInputData(inputX, inputY) {
-    inputX = constrain(inputX, 0, width);
-    inputY = constrain(inputY, 0, height);
-    const HALF_WIDTH = width / 2;
-    const PIXEL_VALUES = get(inputX, inputY);
+    let selectedImage = '-';
+    let selectedX = '-';
+    let selectedY = '-';
+    let selectedR = '-';
+    let selectedG = '-';
+    let selectedB = '-';
+    let selectedA = '-';
+    let selectedGrey = '-';
+
+    if (inputX >= 0 && inputX < width && inputY > 0 && inputY <= height) {
+      const PIXEL_VALUES = get(inputX, inputY);
+      selectedR = PIXEL_VALUES[0];
+      selectedG = PIXEL_VALUES[1];
+      selectedB = PIXEL_VALUES[2];
+      selectedA = PIXEL_VALUES[3];
+      selectedGrey = round(0.299 * selectedR + 0.587 * selectedG + 0.114 * selectedB);  // NTSC
+      // Mouse on original image.
+      if (inputX < this.original.size.width && inputY < this.original.size.height) {
+        selectedImage = 'Original';
+        selectedX = inputX;
+        selectedY = inputY;
+      }
+      // Mouse on target image.
+      else if (inputX >= this.original.size.width && inputY < this.target.size.height) {
+        selectedImage = 'Resultado';
+        selectedX = inputX - this.original.size.width;
+        selectedY = inputY;
+      }
+    }
+
     this.inputData = {
-      image: inputX < HALF_WIDTH ? 'original' : 'resultado',
-      x: inputX < HALF_WIDTH ? inputX : inputX - HALF_WIDTH,
-      y: inputY,
-      r: PIXEL_VALUES[0],
-      g: PIXEL_VALUES[1],
-      b: PIXEL_VALUES[2],
-      a: PIXEL_VALUES[3],
-      grey: round((PIXEL_VALUES[0] + PIXEL_VALUES[1] + PIXEL_VALUES[2]) / 3)
+      image: selectedImage,
+      x: selectedX,
+      y: selectedY,
+      r: selectedR,
+      g: selectedG,
+      b: selectedB,
+      a: selectedA,
+      grey: selectedGrey
     };
   }
   

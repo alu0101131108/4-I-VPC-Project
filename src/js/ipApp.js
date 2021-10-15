@@ -17,15 +17,15 @@ class IpApp {
   
   setup() {
     this.model.updateImageData();
-    let originalWidth = this.model.original.size['width'];
-    let originalHeight = this.model.original.size['height'];
-    this.view.resetCanvas(originalWidth, originalHeight);
+    this.view.updateCanvas(this.model.original, this.model.target);
+    this.view.updateImageInfo(this.model.original);
+    this.view.updateHistograms(this.model.original.histogramData.normal);
     this.setupButtons();
   }
   
   draw() {
     this.model.updateInputData(mouseX, mouseY);
-    this.updateView();
+    this.view.updateInputInfo(this.model.inputData);
   }
 
   setupButtons() {
@@ -58,11 +58,6 @@ class IpApp {
       }
     };
 
-  }
-
-  updateView() {
-    this.view.updateImages(this.model.original, this.model.target);
-    this.view.updateInfo(this.model.original, this.model.inputData);
   }
   
 }

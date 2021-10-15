@@ -18,35 +18,32 @@ html, body {
 
 #main-menu {
   display: block;
-  margin-top: 35%;
+  margin-top: 30%;
   text-align: center;
 }
 
 #operations {
   display: none;
   text-align: center;
+  padding: 3vh;
 }
 
 #information {
   display: none;
   text-align: center;
+  padding: 3vh;
 }
 
 #chartboxes {
-  display: none;
-  text-align: center;
+  padding: 3vh;
 }
 
 #original-chartbox {
-  text-align: center;
-  padding: 10vh;
   height: 800px;
 }
 
 #target-chartbox {
   display: none;
-  padding: 10vh;
-  text-align: center;
   height: 800px;
 }
 
