@@ -3,7 +3,7 @@
 class IpView {
   renderer;
   originalChart;
-  targetChart;
+  resultChart;
   infoElements;
 
   constructor() {
@@ -18,13 +18,13 @@ class IpView {
       pixelValues: document.getElementById('pixelValues')
     }
   }
-  
-  updateCanvas(original, target) {
+
+  updateCanvas(original, result) {
     // Canvas creation
-    const CANVAS_WIDTH = target ? 
-        original.size.width + target.size.width : original.size.width;
-    const CANVAS_HEIGHT = target ? 
-        max(original.size.height, target.size.height) : original.size.height;
+    const CANVAS_WIDTH = result ? 
+        original.size.width + result.size.width : original.size.width;
+    const CANVAS_HEIGHT = result ? 
+        max(original.size.height, result.size.height) : original.size.height;
     this.renderer = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     this.renderer.parent(document.getElementById('canvas'));
     this.renderer.center('horizontal');
@@ -32,8 +32,8 @@ class IpView {
     // Canvas images
     background(150);
     image(original.p5Image, 0, 0);
-    if (target) {
-      image(target.p5Image, original.size.width, 0);
+    if (result) {
+      image(result.p5Image, original.size.width, 0);
       document.getElementById('result-title').style.display = 'inline';
     } else {
       document.getElementById('result-title').style.display = 'none';
@@ -55,6 +55,19 @@ class IpView {
         'Contraste: ' + imageData.parameters.contrast;
     this.infoElements.entropy.textContent = 
         'Entropía: ' + imageData.parameters.entropy;
+  }
+
+  // Updates options in the original current image selector.
+  updateOriginalSelector(images, current) {
+    const originalSelector = document.getElementById('original-selector');
+    while (originalSelector.firstChild) originalSelector.removeChild(originalSelector.firstChild);
+    for (let image of images) {
+      const option = document.createElement('option');
+      option.value = image.id;
+      option.text = image.id;
+      originalSelector.appendChild(option);
+      if (current.id === option.value) originalSelector.value = option.value;
+    }
   }
 
   // Info based on user input.
@@ -106,7 +119,6 @@ class IpView {
 
     if (this.originalChart) this.originalChart.destroy();
     this.originalChart = new Chart(document.getElementById('original-chart'), config);
-
   }
 }
 

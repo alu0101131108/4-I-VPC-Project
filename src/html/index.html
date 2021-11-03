@@ -21,11 +21,16 @@
     </div>
 
     <div id="main-menu">
-      <button id = "save-btn"> Guardar </button>
-      <input type = "file" id = "fileUpload-btn">
-      <button id = "roi-btn"> Seleccionar ROI</button>
-      <button id = "showInfo-btn"> Mostrar/Ocultar Información </button>
-      <button id = "showOperation-btn"> Mostrar/Ocultar Operaciones </button>
+      <div>
+        <select name="original-selector" id="original-selector"></select>
+        <input type = "file" id = "fileUpload-btn">
+        <button id = "roi-btn"> Seleccionar ROI</button>
+        <button id = "download-btn"> Descargar Resultado</button>
+      </div>
+      <div style="padding-top: 10px">
+        <button id = "showInfo-btn"> Mostrar/Ocultar Información </button>
+        <button id = "showOperation-btn"> Mostrar/Ocultar Operaciones </button>
+      </div>
     </div>
 
     <div id = "operations">

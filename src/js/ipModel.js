@@ -3,21 +3,31 @@
 import { IpImage } from "./ipImage.js";
 
 class IpModel {
+  images;
   original;
-  target;
+  result;
   inputData;  // attrs: image, x, y, r, g, b, a, grey. Gets updated each frame.
 
   constructor() {  
-  
+    this.images = [];
   }
 
-  setOriginal(filename) {
-    this.original = new IpImage(filename);
+  loadImage(newImage) {
+    for (let image of this.images) {
+      if (image.id === newImage.id) return;
+    }
+    this.images.push(newImage);
+  }
+
+  setOriginalById(id) {
+    for (let image of this.images) {
+      if (image.id === id) this.original = image;
+    }
   }
 
   updateImageData() {
     this.original.updateData();
-    if (this.target) this.target.updateData();
+    if (this.result) this.result.updateData();
   }
 
   updateInputData(inputX, inputY) {
@@ -43,8 +53,8 @@ class IpModel {
         selectedX = inputX;
         selectedY = inputY;
       }
-      // Mouse on target image.
-      else if (inputX >= this.original.size.width && inputY < this.target.size.height) {
+      // Mouse on result image.
+      else if (inputX >= this.original.size.width && inputY < this.result.size.height) {
         selectedImage = 'Resultado';
         selectedX = inputX - this.original.size.width;
         selectedY = inputY;

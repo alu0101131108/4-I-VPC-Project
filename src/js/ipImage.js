@@ -2,6 +2,7 @@
 
 class IpImage {
   p5Image;
+  id;
   greyPixels;
   extension;
   size;           // attrs: width, height.
@@ -9,9 +10,11 @@ class IpImage {
   colorRange;     // attrs: low, high.
   parameters;     // attrs: bright, contrast, entropy.
   
-  constructor(filename) {
-    if (filename) {
-      this.p5Image = loadImage('./../../images/' + filename);
+  constructor(path, filename) {
+
+    if (path) {
+      this.p5Image = loadImage(path);
+      this.id = filename;
       this.extension = filename.split('.').pop();
     }
 
@@ -20,9 +23,7 @@ class IpImage {
       result.fill(0);
       return result;
     }
-
     this.greyPixels = emptyZeroArray(0);
-
     this.histogramData = {
       normal: {
         red: emptyZeroArray(256),

@@ -1,4 +1,5 @@
 'use strict';
+import { IpImage } from './ipImage.js';
 import {IpModel} from './ipModel.js';
 import {IpView} from './ipView.js';
 
@@ -12,12 +13,13 @@ class IpApp {
   }
 
   loadDefaultImage(filename) {
-    this.model.setOriginal(filename);
+    this.model.loadImage(new IpImage("./../../images/" + filename, filename));
+    this.model.setOriginalById(filename);
   }
   
   setup() {
     this.model.updateImageData();
-    this.view.updateCanvas(this.model.original, this.model.target);
+    this.view.updateCanvas(this.model.original, this.model.result);
     this.view.updateImageInfo(this.model.original);
     this.view.updateHistograms(this.model.original.histogramData.normal);
     this.setupButtons();
@@ -29,15 +31,38 @@ class IpApp {
   }
 
   setupButtons() {
+    // Current original image selector.
+    this.view.updateOriginalSelector(this.model.images, this.model.original);
+    document.getElementById('original-selector').onchange = (event) => {
+      this.model.setOriginalById(event.target.value);
+      this.setup();
+    }
+
     // Download button.
-    document.getElementById('save-btn').onclick = () => {
-      if (this.model.target) 
-        save(this.model.target.p5Image,'download.png');
+    document.getElementById('download-btn').onclick = () => {
+      if (this.model.result) 
+        save(this.model.result.p5Image,'download.png');
     };
 
-    // TODO: Open button.
+    // Open image file button.
+    document.getElementById('fileUpload-btn').onchange = () => {
+      const files = document.getElementById('fileUpload-btn').files;
+      if (files.length === 0) return;
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        const htmlImg = new Image();
+        htmlImg.src = reader.result;
+        this.model.loadImage(new IpImage(htmlImg.src, files[0].name));
+        setTimeout(() => {
+          this.model.setOriginalById(files[0].name);
+          setup();
+        }, 200);
+      });
+      reader.readAsDataURL(files[0]);
+    };
+
     // TODO: ROI button.
-    
+
     // Toggle operations button.
     document.getElementById('showOperation-btn').onclick = () => {
       let operationsDiv = document.getElementById('operations');
@@ -57,9 +82,7 @@ class IpApp {
         infoDiv.style.display = 'none';
       }
     };
-
   }
-  
 }
 
 export {IpApp};
