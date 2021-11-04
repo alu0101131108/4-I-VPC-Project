@@ -17,6 +17,16 @@ function draw() {
   APP.draw();
 }
 
+function mousePressed() {
+  if (mouseX >= 0 && mouseX < width && mouseY >= 0 && mouseY < height)
+    APP.mousePressedOnCanvas();
+}
+
+function mouseReleased() {
+  if (mouseX >= 0 && mouseX < width && mouseY >= 0 && mouseY < height)
+    APP.mouseReleasedOnCanvas();
+}
+
 // function setupButtons() {
 //   // Download button.
 //   document.getElementById('download').onclick = () => {
@@ -151,3 +161,5 @@ function draw() {
 window.preload = preload;
 window.setup = setup;
 window.draw = draw;
+window.mousePressed = mousePressed;
+window.mouseReleased = mouseReleased;

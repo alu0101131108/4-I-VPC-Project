@@ -7,9 +7,11 @@ class IpModel {
   original;
   result;
   inputData;  // attrs: image, x, y, r, g, b, a, grey. Gets updated each frame.
-
-  constructor() {  
+  mouseSelection;
+  
+  constructor() {
     this.images = [];
+    this.mouseSelection = [];
   }
 
   loadImage(newImage) {
@@ -23,6 +25,7 @@ class IpModel {
     for (let image of this.images) {
       if (image.id === id) this.original = image;
     }
+    this.result = undefined;
   }
 
   updateImageData() {
@@ -40,7 +43,7 @@ class IpModel {
     let selectedA = '-';
     let selectedGrey = '-';
 
-    if (inputX >= 0 && inputX < width && inputY > 0 && inputY <= height) {
+    if (inputX >= 0 && inputX < width && inputY >= 0 && inputY < height) {
       const PIXEL_VALUES = get(inputX, inputY);
       selectedR = PIXEL_VALUES[0];
       selectedG = PIXEL_VALUES[1];

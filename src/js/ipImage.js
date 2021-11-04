@@ -10,14 +10,26 @@ class IpImage {
   colorRange;     // attrs: low, high.
   parameters;     // attrs: bright, contrast, entropy.
   
-  constructor(path, filename) {
-
-    if (path) {
-      this.p5Image = loadImage(path);
+  constructor(value, filename) {
+    // Path constructor, if no filename is specified it will look at last path directory.
+    if (typeof(value) === 'string') {
+      this.p5Image = loadImage(value);
+      filename = filename ? filename : value.split('/').pop();
       this.id = filename;
       this.extension = filename.split('.').pop();
     }
+    // P5Image object constructor
+    else if (typeof(value) === 'object' && filename) {
+      this.p5Image = value;
+      this.id = filename;
+      this.extension = filename.split('.').pop();
+    }
+    // No construction method recognized.
+    else {
+      console.log('ERROR - IpImage constructor failed.');
+    }
 
+    // Attributes lists initialization.
     const emptyZeroArray = (n) => {
       let result = new Array(n);
       result.fill(0);

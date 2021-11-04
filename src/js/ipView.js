@@ -19,6 +19,7 @@ class IpView {
     }
   }
 
+  // Recreates canvas according to new original and result images.
   updateCanvas(original, result) {
     // Canvas creation
     const CANVAS_WIDTH = result ? 
@@ -40,7 +41,7 @@ class IpView {
     }
   }
 
-  // Info based on current original image.
+  // Updates info section based on current original image.
   updateImageInfo(imageData) {
     this.infoElements.extension.textContent = 
         'Extensión: ' + imageData.extension;
@@ -57,28 +58,16 @@ class IpView {
         'Entropía: ' + imageData.parameters.entropy;
   }
 
-  // Updates options in the original current image selector.
-  updateOriginalSelector(images, current) {
-    const originalSelector = document.getElementById('original-selector');
-    while (originalSelector.firstChild) originalSelector.removeChild(originalSelector.firstChild);
-    for (let image of images) {
-      const option = document.createElement('option');
-      option.value = image.id;
-      option.text = image.id;
-      originalSelector.appendChild(option);
-      if (current.id === option.value) originalSelector.value = option.value;
-    }
-  }
-
-  // Info based on user input.
+  // Updates info section based on user input.
   updateInputInfo(inputData) {
     this.infoElements.mouseXY.textContent = 
-        'Imagen: ' + inputData.image + ',  X: ' + inputData.x + ',  Y: ' + inputData.y;
+    'Imagen: ' + inputData.image + ',  X: ' + inputData.x + ',  Y: ' + inputData.y;
     this.infoElements.pixelValues.textContent = 
-        'R: ' + inputData.r + ',  G: ' + inputData.g + ',  B: ' + inputData.b + ',  A: ' + 
-        inputData.a + ',  Gris: ' + inputData.grey;
+    'R: ' + inputData.r + ',  G: ' + inputData.g + ',  B: ' + inputData.b + ',  A: ' + 
+    inputData.a + ',  Gris: ' + inputData.grey;
   }
-
+  
+  // Updates histograms according to new original and result images. (TO CHANGE)
   updateHistograms(data) {
     const datasets = {
       labels: Array.from(Array(256).keys()),
@@ -103,7 +92,7 @@ class IpView {
         backgroundColor: 'rgba(50, 50, 50, 1)'
       }]
     };
-
+    
     const config = {
       type: 'bar',
       data: datasets,
@@ -116,9 +105,26 @@ class IpView {
         maintainAspectRatio: false,
       }
     };
-
+    
     if (this.originalChart) this.originalChart.destroy();
     this.originalChart = new Chart(document.getElementById('original-chart'), config);
+  }
+  
+  // Updates options in the original current image selector.
+  updateOriginalSelector(images, current) {
+    const originalSelector = document.getElementById('original-selector');
+    while (originalSelector.firstChild) originalSelector.removeChild(originalSelector.firstChild);
+    for (let image of images) {
+      const option = document.createElement('option');
+      option.value = image.id;
+      option.text = image.id;
+      originalSelector.appendChild(option);
+      if (current.id === option.value) originalSelector.value = option.value;
+    }
+  }
+
+  updateRoiButton(state) {
+    document.getElementById('roi-btn').style.color = state === 'roi' ? 'red' : '';
   }
 }
 
