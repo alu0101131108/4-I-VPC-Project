@@ -8,10 +8,12 @@ class IpModel {
   result;
   inputData;  // attrs: image, x, y, r, g, b, a, grey. Gets updated each frame.
   mouseSelection;
+  state;
   
   constructor() {
     this.images = [];
     this.mouseSelection = [];
+    this.state = 'normal';
   }
 
   loadImage(newImage) {

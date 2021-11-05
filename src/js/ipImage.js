@@ -9,6 +9,7 @@ class IpImage {
   histogramData;  // attrs: normal: [r, g, b, grey], accumulated: [r, g, b, grey].
   colorRange;     // attrs: low, high.
   parameters;     // attrs: bright, contrast, entropy.
+  ready;
   
   constructor(value, filename) {
     // Path constructor, if no filename is specified it will look at last path directory.
@@ -51,6 +52,7 @@ class IpImage {
       }
     }
 
+    this.ready = false;
   }
 
   updateData() {
@@ -58,6 +60,7 @@ class IpImage {
     this.updateHistogramData();
     this.updateColorRange();
     this.updateParameters();
+    this.ready = true;
   }
 
   updateSize() {

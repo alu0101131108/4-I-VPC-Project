@@ -1,19 +1,20 @@
 'use strict';
-import { IpImage } from './ipImage.js';
+import {IpImage} from './ipImage.js';
 import {IpModel} from './ipModel.js';
 import {IpView} from './ipView.js';
+import {IpTransformer} from './ipTransformer.js';
 
 const TIMEOUT_DELAY = 100;
 
 class IpApp {
   model;
   view;
-  state;      // normal, roi;
+  transformer;
   
   constructor() {
     this.model = new IpModel();
     this.view = new IpView(); 
-    this.state = 0;
+    this.transformer = new IpTransformer();
   }
 
   loadDefaultImage(filename) {
@@ -22,26 +23,27 @@ class IpApp {
   }
   
   setup() {
-    this.model.updateImageData();
-    this.model.mouseSelection = [];
-    this.state = 'normal';
-
     this.setupMenuButtons();
     this.setupOperationButtons();
     this.refreshView();
   }
   
   draw() {
+    if (!this.model.original.ready || (this.model.result && !this.model.result.ready)) 
+      return; // Dont draw in case original or result arent ready.
     this.model.updateInputData(int(mouseX), int(mouseY));
     this.view.updateInputInfo(this.model.inputData);
   }
 
   refreshView() {
-    this.view.updateCanvas(this.model.original, this.model.result);
-    this.view.updateImageInfo(this.model.original);
-    this.view.updateHistograms(this.model.original, this.model.result);
-    this.view.updateOriginalSelector(this.model.images, this.model.original);
-    this.view.updateRoiButton(this.state);
+    setTimeout(() => {
+      this.model.updateImageData();
+      this.view.updateCanvas(this.model.original, this.model.result);
+      this.view.updateImageInfo(this.model.original);
+      this.view.updateHistograms(this.model.original, this.model.result);
+      this.view.updateOriginalSelector(this.model.images, this.model.original);
+      this.view.updateRoiButton(this.model.state);
+    }, TIMEOUT_DELAY);
   }
 
   setupMenuButtons() {
@@ -60,19 +62,16 @@ class IpApp {
         const htmlImg = new Image();
         htmlImg.src = reader.result;
         this.model.loadImage(new IpImage(htmlImg.src, files[0].name));
-        setTimeout(() => {
-          this.model.setOriginalById(files[0].name);
-          this.model.updateImageData();
-          this.refreshView();
-        }, TIMEOUT_DELAY);
+        this.model.setOriginalById(files[0].name);
+        this.refreshView();
       });
       reader.readAsDataURL(files[0]);
     };
     
     // ROI button.
     document.getElementById('roi-btn').onclick = () => {
-      this.state = this.state !== 'roi' ? 'roi' : 'normal';
-      this.view.updateRoiButton(this.state);
+      this.model.state = this.model.state !== 'roi' ? 'roi' : 'normal';
+      this.view.updateRoiButton(this.model.state);
     }
     
     // Save button.
@@ -85,7 +84,8 @@ class IpApp {
         }
         document.getElementById('save-btn-text').value = '';
         this.model.loadImage(this.model.result);
-        this.refreshView();
+        this.view.updateOriginalSelector(this.model.images, this.model.original);
+        // this.refreshView();
       }
     };
 
@@ -130,12 +130,15 @@ class IpApp {
   }
 
   setupOperationButtons() {
-
+    document.getElementById('greyscale-btn').onclick = () => {
+      this.model.result = this.transformer.greyscale(this.model.original);
+      this.refreshView();
+    };
   }
 
   mousePressedOnCanvas() {
     // Check if roi is being selected.
-    if (this.state === 'roi') {
+    if (this.model.state === 'roi') {
       this.model.mouseSelection = [];
       this.model.mouseSelection.push({x: int(mouseX), y: int(mouseY)});
     }
@@ -145,7 +148,7 @@ class IpApp {
 
   mouseReleasedOnCanvas() {
     // Check if roi is being selected and first click was successful.
-    if (this.state === 'roi' && this.model.mouseSelection[0]) {
+    if (this.model.state === 'roi' && this.model.mouseSelection[0]) {
       this.model.mouseSelection.push({x: int(mouseX), y: int(mouseY)});
       this.generateROI(this.model.mouseSelection[0], this.model.mouseSelection[1]);
     }
@@ -161,12 +164,9 @@ class IpApp {
     let roi = get(roiX, roiY, roiWidth, roiHeight);
     let roiname = 'ROI-' + int(random(20)).toString() + '-' + this.model.original.id;
     this.model.result = new IpImage(roi, roiname);
-    this.state = 'normal';
     this.model.mouseSelection = [];
-    setTimeout(() => {
-      this.model.updateImageData();
-      this.refreshView();
-    }, TIMEOUT_DELAY);
+    this.model.state = 'normal';
+    this.refreshView();
   }
 
 }
