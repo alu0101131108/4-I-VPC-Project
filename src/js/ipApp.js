@@ -100,26 +100,6 @@ class IpApp {
       }
     };
 
-    // Toggle operations button.
-    document.getElementById('showOperation-btn').onclick = () => {
-      let operationsDiv = document.getElementById('operations');
-      if (operationsDiv.style.display === 'none' || operationsDiv.style.display === '') {
-        operationsDiv.style.display = 'block';
-      } else {
-        operationsDiv.style.display = 'none';
-      }
-    };
-
-    // Toggle info button.
-    document.getElementById('showInfo-btn').onclick = () => {
-      let infoDiv = document.getElementById('information');
-      if (infoDiv.style.display === 'none' || infoDiv.style.display === '') {
-        infoDiv.style.display = 'block';
-      } else {
-        infoDiv.style.display = 'none';
-      }
-    };
-
     // INFO SECTION: Histogram type radio buttons.
     document.getElementById('choice-reg').onchange = () => {
       this.view.updateHistograms(this.model.original, this.model.result);
