@@ -1,35 +1,37 @@
 html, body {
   padding: 0;
-}
-
-#canvas {
-  display:block;
-  width:100%;
-  margin: 0;
+  background-color: #1C1C21;
+  color: white;
 }
 
 #title {
-  text-align: center;
-  background-color: pink;
+  background-color: #5D0000;
   font-weight: bold;
-  margin: auto;
-  width: 50%;
 }
 
 #main-menu {
   display: block;
-  margin-top: 35%;
+  margin-top: 5%;
   text-align: center;
 }
 
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show{
+  color: white;
+  background-color: #5D0000;
+  border-color: white;
+}
+
+.nav-link, .nav button:hover {
+  color: white;
+}
+
 #operations {
-  display: none;
   text-align: center;
   padding: 3vh;
 }
 
 #information {
-  display: none;
   text-align: center;
   padding: 3vh;
 }
@@ -56,9 +58,4 @@ html, body {
 #result-chart {
   background:  white;
   border: solid black 1px;
-}
-
-#canvas h1 {
-  display: inline;
-  margin-left: 28%;
 }

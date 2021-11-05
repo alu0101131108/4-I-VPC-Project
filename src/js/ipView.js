@@ -28,7 +28,6 @@ class IpView {
         max(original.size.height, result.size.height) : original.size.height;
     this.renderer = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     this.renderer.parent(document.getElementById('canvas'));
-    this.renderer.center('horizontal');
 
     // Canvas images
     background(150);
