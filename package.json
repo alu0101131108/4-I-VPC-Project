@@ -1,0 +1,22 @@
+{
+  "name": "proyecto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/js/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alu0101131108/4-I-VPC-Project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alu0101131108/4-I-VPC-Project/issues"
+  },
+  "homepage": "https://github.com/alu0101131108/4-I-VPC-Project#readme",
+  "dependencies": {
+    "bootstrap": "^5.1.3"
+  }
+}
