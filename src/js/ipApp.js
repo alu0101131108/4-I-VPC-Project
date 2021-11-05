@@ -25,7 +25,7 @@ class IpApp {
     this.state = 'normal'
     this.view.updateCanvas(this.model.original, this.model.result);
     this.view.updateImageInfo(this.model.original);
-    this.view.updateHistograms(this.model.original.histogramData.normal);
+    this.view.updateHistograms(this.model.original, this.model.result);
     this.setupButtons();
   }
   
@@ -74,6 +74,7 @@ class IpApp {
           saveName = document.getElementById('save-btn-text').value;
           this.model.result.id = saveName;
         }
+        document.getElementById('save-btn-text').value = '';
         this.model.loadImage(this.model.result);
         this.setup();
       }
@@ -86,6 +87,7 @@ class IpApp {
         if (document.getElementById('download-btn-text').value)
           downloadName = document.getElementById('download-btn-text').value;
         save(this.model.result.p5Image, downloadName);
+        document.getElementById('download-btn-text').value = '';
       }
     };
 
@@ -107,6 +109,14 @@ class IpApp {
       } else {
         infoDiv.style.display = 'none';
       }
+    };
+
+    // Histograms type radio buttons.
+    document.getElementById('choice-reg').onchange = () => {
+      this.view.updateHistograms(this.model.original, this.model.result);
+    };
+    document.getElementById('choice-acc').onchange = () => {
+      this.view.updateHistograms(this.model.original, this.model.result);
     };
   }
 

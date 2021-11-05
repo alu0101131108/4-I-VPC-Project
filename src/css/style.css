@@ -42,9 +42,10 @@ html, body {
   height: 800px;
 }
 
-#target-chartbox {
+#result-chartbox {
   display: none;
   height: 800px;
+  margin-top: 10vh;
 }
 
 #original-chart {
@@ -52,7 +53,7 @@ html, body {
   border: solid black 1px;
 }
 
-#target-chart {
+#result-chart {
   background:  white;
   border: solid black 1px;
 }
