@@ -122,13 +122,46 @@ class IpImage {
     }
   }
 
-  // TODO
   updateParameters() { 
     this.parameters = {
-      bright: 10,
-      contrast: 10,
-      entropy: 10
+      bright: this.calculateBright(),
+      contrast: this.calculateContrast(),
+      entropy: this.calculateEnthropy()
     }
+  }
+
+  // Get the bright of an image by calculating the average of the Histogram.
+  calculateBright() {
+    let brightValue = 0;
+    for (let i = 0; i < 256; i++) {
+      brightValue += this.histogramData.normal.grey[i] * i;
+    }
+    brightValue = Number((brightValue).toFixed(2));   // Rounding the value to 2 fraction digits.
+    return brightValue;
+  }
+  
+  // Get the bright of an image by calculating the standard deviation of the Histogram.
+  calculateContrast() {
+    let contrastValue = 0;
+    let brightValue = this.calculateBright();
+    for (let i = 0; i < 256; i++) {
+      contrastValue += this.histogramData.normal.grey[i] * ((i - brightValue) ** 2);
+    }
+    contrastValue = Math.sqrt(contrastValue);
+    contrastValue = Number((contrastValue).toFixed(2));   // Rounding the value to 2 fraction digits.
+    return contrastValue;
+  }
+
+  // Enthropy is calculated as -SUM(p[i] * log(p[i])).
+  calculateEnthropy() {
+    let enthropyValue = 0;
+    for (let i = 0; i < 256; i++) {
+      if (this.histogramData.normal.grey[i] != 0)   // Filtering out histogram values of 0, as log(0) has no solution.
+        enthropyValue += this.histogramData.normal.grey[i] * Math.log2(this.histogramData.normal.grey[i]);
+    }
+    enthropyValue = -enthropyValue;
+    enthropyValue = Number((enthropyValue).toFixed(2));   // Rounding the value to 2 fraction digits.
+    return enthropyValue;
   }
 }
     
