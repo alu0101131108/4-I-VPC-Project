@@ -67,7 +67,7 @@ class IpView {
     inputData.a + ',  Gris: ' + inputData.grey;
   }
   
-  // Updates histograms according to new original and result images. (TO CHANGE)
+  // Updates histograms according to new original and result images.
   updateHistograms(original, result) {
     // Original image chart.
     let originalData = document.getElementById('choice-reg').checked ? 
@@ -109,7 +109,7 @@ class IpView {
         maintainAspectRatio: false,
       }
     };
-    
+
     if (this.originalChart) this.originalChart.destroy();
     this.originalChart = new Chart(document.getElementById('original-chart'), originalConfig);
 
@@ -158,7 +158,6 @@ class IpView {
     
     if (this.resultChart) this.resultChart.destroy();
     this.resultChart = new Chart(document.getElementById('result-chart'), resultConfig);
-
   }
   
   // Updates options in the original current image selector.

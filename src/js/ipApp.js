@@ -3,6 +3,8 @@ import { IpImage } from './ipImage.js';
 import {IpModel} from './ipModel.js';
 import {IpView} from './ipView.js';
 
+const TIMEOUT_DELAY = 100;
+
 class IpApp {
   model;
   view;
@@ -22,11 +24,11 @@ class IpApp {
   setup() {
     this.model.updateImageData();
     this.model.mouseSelection = [];
-    this.state = 'normal'
-    this.view.updateCanvas(this.model.original, this.model.result);
-    this.view.updateImageInfo(this.model.original);
-    this.view.updateHistograms(this.model.original, this.model.result);
-    this.setupButtons();
+    this.state = 'normal';
+
+    this.setupMenuButtons();
+    this.setupOperationButtons();
+    this.refreshView();
   }
   
   draw() {
@@ -34,12 +36,19 @@ class IpApp {
     this.view.updateInputInfo(this.model.inputData);
   }
 
-  setupButtons() {
-    // Current original image selector.
+  refreshView() {
+    this.view.updateCanvas(this.model.original, this.model.result);
+    this.view.updateImageInfo(this.model.original);
+    this.view.updateHistograms(this.model.original, this.model.result);
     this.view.updateOriginalSelector(this.model.images, this.model.original);
+    this.view.updateRoiButton(this.state);
+  }
+
+  setupMenuButtons() {
+    // Current original image selector.
     document.getElementById('original-selector').onchange = (event) => {
       this.model.setOriginalById(event.target.value);
-      this.setup();
+      this.refreshView();
     }
 
     // Open image file button.
@@ -53,14 +62,14 @@ class IpApp {
         this.model.loadImage(new IpImage(htmlImg.src, files[0].name));
         setTimeout(() => {
           this.model.setOriginalById(files[0].name);
-          this.setup();
-        }, 200);
+          this.model.updateImageData();
+          this.refreshView();
+        }, TIMEOUT_DELAY);
       });
       reader.readAsDataURL(files[0]);
     };
     
     // ROI button.
-    this.view.updateRoiButton(this.state);
     document.getElementById('roi-btn').onclick = () => {
       this.state = this.state !== 'roi' ? 'roi' : 'normal';
       this.view.updateRoiButton(this.state);
@@ -76,7 +85,7 @@ class IpApp {
         }
         document.getElementById('save-btn-text').value = '';
         this.model.loadImage(this.model.result);
-        this.setup();
+        this.refreshView();
       }
     };
 
@@ -111,13 +120,17 @@ class IpApp {
       }
     };
 
-    // Histograms type radio buttons.
+    // INFO SECTION: Histogram type radio buttons.
     document.getElementById('choice-reg').onchange = () => {
       this.view.updateHistograms(this.model.original, this.model.result);
     };
     document.getElementById('choice-acc').onchange = () => {
       this.view.updateHistograms(this.model.original, this.model.result);
     };
+  }
+
+  setupOperationButtons() {
+
   }
 
   mousePressedOnCanvas() {
@@ -148,7 +161,12 @@ class IpApp {
     let roi = get(roiX, roiY, roiWidth, roiHeight);
     let roiname = 'ROI-' + int(random(20)).toString() + '-' + this.model.original.id;
     this.model.result = new IpImage(roi, roiname);
-    this.setup();
+    this.state = 'normal';
+    this.model.mouseSelection = [];
+    setTimeout(() => {
+      this.model.updateImageData();
+      this.refreshView();
+    }, TIMEOUT_DELAY);
   }
 
 }
