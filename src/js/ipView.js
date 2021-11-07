@@ -68,95 +68,20 @@ class IpView {
   
   // Updates histograms according to new original and result images.
   updateHistograms(original, result) {
+    const normal = document.getElementById('choice-reg').checked;
+
     // Original image chart.
-    let originalData = document.getElementById('choice-reg').checked ? 
-        original.histogramData.normal : original.histogramData.accumulated;
-
-    const originalDatasets = {
-      labels: Array.from(Array(256).keys()),
-      datasets: [{
-        label: 'Red',
-        data: originalData.red,
-        backgroundColor: 'rgba(255, 0, 0, 1)'
-      },
-      {
-        label: 'Green',
-        data: originalData.green,
-        backgroundColor: 'rgba(0, 255, 0, 1)'
-      },
-      {
-        label: 'Blue',
-        data: originalData.blue,
-        backgroundColor: 'rgba(0, 0, 255, 1)'
-      },
-      {
-        label: 'Grey',
-        data: originalData.grey,
-        backgroundColor: 'rgba(50, 50, 50, 1)'
-      }]
-    };
-    
-    const originalConfig = {
-      type: 'bar',
-      data: originalDatasets,
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        },
-        maintainAspectRatio: false,
-      }
-    };
-
     if (this.originalChart) this.originalChart.destroy();
-    this.originalChart = new Chart(document.getElementById('original-chart'), originalConfig);
+    this.originalChart = this.generateChart(document.getElementById('original-chart'), 
+      original.histogramData[normal ? 'normal' : 'accumulated']);
 
     // Result image chart (optional).
     document.getElementById('result-chartbox').style.display = result ? 'block' : 'none';
-    if(!result) return;
+    if (!result) return
 
-    let resultData = document.getElementById('choice-reg').checked ? 
-        result.histogramData.normal : result.histogramData.accumulated;
-    const resultDatasets = {
-      labels: Array.from(Array(256).keys()),
-      datasets: [{
-        label: 'Red',
-        data: resultData.red,
-        backgroundColor: 'rgba(255, 0, 0, 1)'
-      },
-      {
-        label: 'Green',
-        data: resultData.green,
-        backgroundColor: 'rgba(0, 255, 0, 1)'
-      },
-      {
-        label: 'Blue',
-        data: resultData.blue,
-        backgroundColor: 'rgba(0, 0, 255, 1)'
-      },
-      {
-        label: 'Grey',
-        data: resultData.grey,
-        backgroundColor: 'rgba(50, 50, 50, 1)'
-      }]
-    };
-    
-    const resultConfig = {
-      type: 'bar',
-      data: resultDatasets,
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        },
-        maintainAspectRatio: false,
-      }
-    };
-    
     if (this.resultChart) this.resultChart.destroy();
-    this.resultChart = new Chart(document.getElementById('result-chart'), resultConfig);
+    this.resultChart = this.generateChart(document.getElementById('result-chart'), 
+    result.histogramData[normal ? 'normal' : 'accumulated']);
   }
   
   // Updates options in the original current image selector.
@@ -174,6 +99,51 @@ class IpView {
 
   updateRoiButton(state) {
     document.getElementById('roi-btn').style.color = state === 'roi' ? 'red' : '';
+  }
+
+  generateChart(div, data) {
+
+    const datasets = {
+      labels: Array.from(Array(256).keys()),
+      datasets: [{
+        label: 'Red',
+        data: data.red,
+        backgroundColor: 'rgba(255, 0, 0, 1)',
+        hidden: true
+      },
+      {
+        label: 'Green',
+        data: data.green,
+        backgroundColor: 'rgba(0, 255, 0, 1)',
+        hidden: true
+      },
+      {
+        label: 'Blue',
+        data: data.blue,
+        backgroundColor: 'rgba(0, 0, 255, 1)',
+        hidden: true
+      },
+      {
+        label: 'Grey',
+        data: data.grey,
+        backgroundColor: 'rgba(50, 50, 50, 1)'
+      }]
+    };
+    
+    const configuration = {
+      type: 'bar',
+      data: datasets,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        maintainAspectRatio: false,
+      }
+    };
+
+    return new Chart(div, configuration);
   }
 }
 

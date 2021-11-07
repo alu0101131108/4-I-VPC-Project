@@ -166,48 +166,19 @@ class IpImage {
     enthropyValue = Number((enthropyValue).toFixed(2));   // Rounding the value to 2 fraction digits.
     return enthropyValue;
   }
+
+  applyLUT(LUT) {
+    this.p5Image.loadPixels();
+    for (let i = 0; i < this.p5Image.pixels.length; i = i + 4) {
+      this.p5Image.pixels[i] = LUT[this.p5Image.pixels[i]];
+      this.p5Image.pixels[i + 1] = LUT[this.p5Image.pixels[i + 1]];
+      this.p5Image.pixels[i + 2] = LUT[this.p5Image.pixels[i + 2]];
+      // this.p5Image.pixels[i + 3] is the alpha value, therefore remains static.
+    }
+    this.p5Image.updatePixels();
+  }
+
 }
     
 export {IpImage};
-    
-    
-
-
-  // Color: 0 for RED
-  //        1 for GREEN
-  //        2 for BLUE
-  //        -1 for GREYSCALE value (TODO).
-  // getIntensityFrequency(color) {
-  //   this.p5Image.loadPixels();
-  //   let intensityFrequency = new Array(256);
-  //   intensityFrequency.fill(0);
-  //   for (let i = color; i < this.p5Image.pixels.length; i = i + 4) {
-  //     intensityFrequency[this.p5Image.pixels[i]]++;
-  //   }
-  //   return intensityFrequency;
-  // }
-
-  // getAccIntensityFrequency(color) {
-  //   let accumulativeIntensityFrequency = this.getIntensityFrequency(color);
-  //   for (let i = 1; i < accumulativeIntensityFrequency.length; i++) {
-  //     accumulativeIntensityFrequency[i] = accumulativeIntensityFrequency[i - 1] +
-  //         accumulativeIntensityFrequency[i];
-  //   }
-  //   return accumulativeIntensityFrequency;
-  // }
-
-  // Esto nose si deberia ir aqui la vd.
-  // greyscale() {
-  //   this.p5Image.loadPixels();
-  //   let originalPixels = this.p5Image.pixels;
-
-  //   for (let i = 0; i < originalPixels.length; i = i + 4) {
-  //     let ntscGreyValue = 0.299 * originalPixels[i] + 0.587 * originalPixels[i + 1] + 0.114 * originalPixels[i + 2];
-  //     this.p5Image.pixels[i] = ntscGreyValue;
-  //     this.p5Image.pixels[i + 1] = ntscGreyValue;
-  //     this.p5Image.pixels[i + 2] = ntscGreyValue;
-  //   }
-
-  //   this.p5Image.updatePixels();
-  // }
 
