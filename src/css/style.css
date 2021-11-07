@@ -26,6 +26,11 @@ html, body {
   color: white;
 }
 
+.btn, .btn:hover {
+  background-color: #5D0000;
+  border-color: white;
+}
+
 #operations {
   text-align: center;
   padding: 3vh;

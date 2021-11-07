@@ -55,8 +55,11 @@
 
         <!-- General tab -->
         <div class="tab-pane fade show active" id="general" role="tabpanel">
-          <select name="original-selector" id="original-selector"></select>
-          <input type = "file" id = "fileUpload-btn">
+          <div class="btn-group" role="group">
+            <label for="fileUpload-btn" class = "btn btn-primary" >Abrir</label>
+            <select class="form-select" name="original-selector" id="original-selector"></select>
+            <input style="display:none;" type = "file" id = "fileUpload-btn">
+          </div>
           <button id = "save-btn"> Guardar resultado -></button>
           <input type = "text" id = "save-btn-text" placeholder="ejemplo.jpg">
           <button id = "download-btn"> Descargar resultado</button>
