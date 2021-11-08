@@ -67,6 +67,7 @@ class IpApp {
     document.getElementById('roi-btn').onclick = () => {
       this.model.state = this.model.state !== 'roi' ? 'roi' : 'normal';
       this.view.updateRoiButton(this.model.state);
+      document.getElementById('transformation-chartbox').style.display = 'none';
     }
     
     // Save button.
@@ -94,6 +95,7 @@ class IpApp {
     // Greyscale
     document.getElementById('greyscale-btn').onclick = () => {
       this.model.result = this.transformer.greyscale(this.model.original);
+      document.getElementById('transformation-chartbox').style.display = 'none';
       this.refreshView();
     };
 
