@@ -41,18 +41,13 @@ class IpApp {
       this.view.updateCanvas(this.model.original, this.model.result);
       this.view.updateImageInfo(this.model.original);
       this.view.updateHistograms(this.model.original, this.model.result);
-      this.view.updateOriginalSelector(this.model.images, this.model.original);
+      this.view.updateImageCards(this.model.images);
+      this.updateImageButtons();
       this.view.updateRoiButton(this.model.state);
     }, TIMEOUT_DELAY);
   }
 
   setupMenuButtons() {
-    // Current original image selector.
-    document.getElementById('original-selector').onchange = (event) => {
-      this.model.setOriginalById(event.target.value);
-      this.refreshView();
-    }
-
     // Open image file button.
     document.getElementById('fileUpload-btn').onchange = () => {
       const files = document.getElementById('fileUpload-btn').files;
@@ -77,25 +72,9 @@ class IpApp {
     // Save button.
     document.getElementById('save-btn').onclick = () => {
       if (this.model.result) {
-        let saveName = this.model.result.id;
-        if (document.getElementById('save-btn-text').value) {
-          saveName = document.getElementById('save-btn-text').value;
-          this.model.result.id = saveName;
-        }
-        document.getElementById('save-btn-text').value = '';
         this.model.loadImage(this.model.result);
-        this.view.updateOriginalSelector(this.model.images, this.model.original);
-      }
-    };
-
-    // Download button.
-    document.getElementById('download-btn').onclick = () => {
-      if (this.model.result) {
-        let downloadName = this.model.result.id;
-        if (document.getElementById('download-btn-text').value)
-          downloadName = document.getElementById('download-btn-text').value;
-        save(this.model.result.p5Image, downloadName);
-        document.getElementById('download-btn-text').value = '';
+        this.view.updateImageCards(this.model.images);
+        this.updateImageButtons();
       }
     };
 
@@ -206,7 +185,26 @@ class IpApp {
 
       this.refreshView();
     };
+  }
 
+  updateImageButtons() {
+    for (let image of this.model.images) {
+      let downloadButtonID = 'download-btn-' + image.id;
+      let deleteButtonID = 'delete-btn-' + image.id;
+      document.getElementById(downloadButtonID).onclick = () => {
+        save(image.p5Image, image.id);
+      }
+      document.getElementById(deleteButtonID).onclick = () => {
+        const imgIndex = this.model.images.indexOf(image);
+        if (imgIndex > -1) {
+          this.model.images.splice(imgIndex, 1);
+        }
+      }
+      document.getElementById(image.id).onclick = () => {
+        this.model.setOriginalById(image.id);
+        this.refreshView();
+      }
+    }
   }
 
   mousePressedOnCanvas() {
