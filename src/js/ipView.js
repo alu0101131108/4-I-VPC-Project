@@ -99,7 +99,7 @@ class IpView {
       newImgCard.innerHTML =
       "<div class=\"card h-100\">" +
         "<img src=\"" + image.p5Image.canvas.toDataURL() + "\" class=\"card-img-top\">" +
-          "<div class=\"card-body d-flex align-items-md flex-column\">" +
+          "<div class=\"card-body text-center d-flex align-items-md flex-column\">" +
             "<h5 class=\"row justify-content-md-center card-title\">" + image.id + "</h5>" +
             "<div class = \"row justify-content-md-center row-cols-md-3 mt-auto\">" +
               "<div class = \"col col-md-auto btn-group\" role = \"group\">" +
@@ -118,8 +118,8 @@ class IpView {
               "</div>" +
             "</div>" +
           "</div>" +
-        "</div>"
-      "</div"
+        "</div>" +
+      "</div";
       imgCardsDiv.insertBefore(newImgCard, imgCardsDiv.firstChild);
     }
   }
@@ -177,7 +177,7 @@ class IpView {
     this.transformationChart = new Chart(canvas, configuration);
   }
 
-  generateChart(div, data) {
+  generateHistogramChart(canvas, data) {
 
     const datasets = {
       labels: Array.from(Array(256).keys()),
