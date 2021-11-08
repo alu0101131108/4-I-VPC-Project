@@ -1,5 +1,4 @@
 html, body {
-  padding: 0;
   background-color: #1C1C21;
   color: white;
 }
@@ -7,12 +6,6 @@ html, body {
 #title {
   background-color: #5D0000;
   font-weight: bold;
-}
-
-#main-menu {
-  display: block;
-  margin-top: 5%;
-  text-align: center;
 }
 
 .nav-tabs .nav-link.active,
@@ -26,9 +19,28 @@ html, body {
   color: white;
 }
 
-.btn, .btn:hover {
+.btn {
   background-color: #5D0000;
   border-color: white;
+}
+
+.btn:hover {
+  background-color: #370000;
+  border-color: white;
+}
+
+.card {
+  background-color: #1C1C21;
+  border-color: white;
+}
+
+.card:hover {
+  background-color: #5D0000;
+  cursor: pointer;
+}
+
+.btn-work { 
+  text-align: center; 
 }
 
 #operations {
