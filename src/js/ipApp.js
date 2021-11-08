@@ -85,7 +85,6 @@ class IpApp {
         document.getElementById('save-btn-text').value = '';
         this.model.loadImage(this.model.result);
         this.view.updateOriginalSelector(this.model.images, this.model.original);
-        // this.refreshView();
       }
     };
 
@@ -110,17 +109,111 @@ class IpApp {
   }
 
   setupOperationButtons() {
+    // Helpers
+    
+
+    // Greyscale
     document.getElementById('greyscale-btn').onclick = () => {
       this.model.result = this.transformer.greyscale(this.model.original);
       this.refreshView();
     };
+
+    // Linear transformation by sections specified by the user.
+    document.getElementById('lbs-btn').onclick = () => {
+      this.view.toggleOperationInterface(document.getElementById('lbs-interface'));
+      document.getElementById('lbs-reset-btn').onclick();
+      document.getElementById('transformation-chartbox').style.display = 'none';
+    };
+
+    document.getElementById('lbs-addSection-btn').onclick = () => {
+      const startX = document.getElementById('lbs-startX');
+      const startY = document.getElementById('lbs-startY');
+      const endX = document.getElementById('lbs-endX');
+      const endY = document.getElementById('lbs-endY');
+      if (!startX.value || !startY.value || !endX.value || !endY.value) return;
+
+      const section = {
+        start: {
+          x: startX.value,
+          y: startY.value
+        },
+        end: {
+          x: endX.value,
+          y: endY.value
+        }
+      }
+      startX.value = '';
+      startY.value = '';
+      endX.value = '';
+      endY.value = '';
+      
+      this.model.temp.push(section);
+      this.transformer.forceValidSections(this.model.temp);
+
+      const LUT = this.transformer.createLUT((input) => {
+        for (let i = 0; i < this.model.temp.length; i++) {
+          let start = this.model.temp[i].start;
+          let end = this.model.temp[i].end;
+          if (input >= start.x && input <= end.x) {
+            return start.x === end.x ? start.y : (end.y - start.y) * (input - start.x) / (end.x - start.x) + start.y;
+          }
+        }
+        return input;
+      });
+      this.view.updateTransformationChart('lbs-chart', LUT);
+    };
+    
+    document.getElementById('lbs-reset-btn').onclick = () => {
+      this.model.temp = [];
+      this.view.updateTransformationChart('lbs-chart', this.transformer.createLUT((i) => i));
+      document.getElementById('lbs-startX').value = '';
+      document.getElementById('lbs-startY').value = '';
+      document.getElementById('lbs-endX').value = '';
+      document.getElementById('lbs-endY').value = '';
+    };
+    
+    document.getElementById('lbs-apply-btn').onclick = () => {
+      let usedLUT = [];
+      this.model.result = this.transformer.linearBySections(this.model.original, this.model.temp, usedLUT);
+      
+      document.getElementById('transformation-chartbox').style.display = 'block';
+      this.view.updateTransformationChart('transformation-chart', usedLUT);
+
+      document.getElementById('lbs-interface').style.display = 'none';
+      this.refreshView();
+    };
+
+    // Bright and contrast linear adjustment. 
+    document.getElementById('adjustBrightContrast-btn').onclick = () => {
+      this.view.toggleOperationInterface(document.getElementById('adjustBrightContrast-interface'));
+      document.getElementById('transformation-chartbox').style.display = 'none';
+    };
+
+    document.getElementById('adjustBrightContrast-apply-btn').onclick = () => {
+      const brightInput = document.getElementById('adjust-bright');
+      const contrastInput = document.getElementById('adjust-contrast');
+      const newBright = brightInput.value ? brightInput.value : this.model.original.parameters.bright;
+      const newContrast = contrastInput.value ? contrastInput.value : this.model.original.parameters.contrast;
+
+      let usedLUT = [];
+      this.model.result = this.transformer.linearBrightContrastAdjust(this.model.original, newBright, newContrast, usedLUT);
+
+      document.getElementById('transformation-chartbox').style.display = 'block';
+      this.view.updateTransformationChart('transformation-chart', usedLUT);
+
+      brightInput.value = '';
+      contrastInput.value = '';
+
+      this.refreshView();
+    };
+
   }
 
   mousePressedOnCanvas() {
     // Check if roi is being selected.
     if (this.model.state === 'roi') {
-      this.model.mouseSelection = [];
-      this.model.mouseSelection.push({x: int(mouseX), y: int(mouseY)});
+      this.model.temp = [];
+      this.model.temp.push({x: int(mouseX), y: int(mouseY)});
     }
 
     // Other mousePressed in canvas handler
@@ -128,9 +221,9 @@ class IpApp {
 
   mouseReleasedOnCanvas() {
     // Check if roi is being selected and first click was successful.
-    if (this.model.state === 'roi' && this.model.mouseSelection[0]) {
-      this.model.mouseSelection.push({x: int(mouseX), y: int(mouseY)});
-      this.generateROI(this.model.mouseSelection[0], this.model.mouseSelection[1]);
+    if (this.model.state === 'roi' && this.model.temp[0]) {
+      this.model.temp.push({x: int(mouseX), y: int(mouseY)});
+      this.generateROI(this.model.temp[0], this.model.temp[1]);
     }
 
     // Other mouseReleased in canvas handler
@@ -142,9 +235,9 @@ class IpApp {
     let roiWidth = max(first.x, second.x) - min(first.x, second.x);
     let roiHeight = max(first.y, second.y) - min(first.y, second.y);
     let roi = get(roiX, roiY, roiWidth, roiHeight);
-    let roiname = 'ROI-' + int(random(20)).toString() + '-' + this.model.original.id;
+    let roiname = 'ROI-' + int(random(100)).toString() + '-' + this.model.original.id;
     this.model.result = new IpImage(roi, roiname);
-    this.model.mouseSelection = [];
+    this.model.temp = [];
     this.model.state = 'normal';
     this.refreshView();
   }

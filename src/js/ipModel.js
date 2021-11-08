@@ -7,12 +7,12 @@ class IpModel {
   original;
   result;
   inputData;  // attrs: image, x, y, r, g, b, a, grey. Gets updated each frame.
-  mouseSelection;
+  temp;
   state;
   
   constructor() {
     this.images = [];
-    this.mouseSelection = [];
+    this.temp = [];
     this.state = 'normal';
   }
 

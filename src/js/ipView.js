@@ -4,6 +4,7 @@ class IpView {
   renderer;
   originalChart;
   resultChart;
+  transformationChart;
   infoElements;
 
   constructor() {
@@ -72,7 +73,7 @@ class IpView {
 
     // Original image chart.
     if (this.originalChart) this.originalChart.destroy();
-    this.originalChart = this.generateChart(document.getElementById('original-chart'), 
+    this.originalChart = this.generateHistogramChart(document.getElementById('original-chart'), 
       original.histogramData[normal ? 'normal' : 'accumulated']);
 
     // Result image chart (optional).
@@ -80,7 +81,7 @@ class IpView {
     if (!result) return
 
     if (this.resultChart) this.resultChart.destroy();
-    this.resultChart = this.generateChart(document.getElementById('result-chart'), 
+    this.resultChart = this.generateHistogramChart(document.getElementById('result-chart'), 
     result.histogramData[normal ? 'normal' : 'accumulated']);
   }
   
@@ -101,7 +102,56 @@ class IpView {
     document.getElementById('roi-btn').style.color = state === 'roi' ? 'red' : '';
   }
 
-  generateChart(div, data) {
+  updateTransformationChart(canvas, LUT) {
+    const datasets = {
+      labels: Array.from(Array(256).keys()),
+      datasets: [{
+        label: 'Vout',
+        data: LUT,
+        borderColor: 'rgba(255,255,255,1)',
+        backgroundColor: 'rgba(255,255,0,1)',
+        borderDash: [5, 5],
+      }]
+    };
+
+    const configuration = {
+      type: 'line',
+      data: datasets,
+      options: {
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Vout'
+            },
+            max: 255,
+            min: 0,
+            beginAtZero: true
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Vin'
+            },
+            max: 255,
+            min: 0,
+            beginAtZero: true
+          }
+        },
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    };
+
+    if (this.transformationChart) this.transformationChart.destroy();
+    this.transformationChart = new Chart(canvas, configuration);
+  }
+
+  generateHistogramChart(canvas, data) {
 
     const datasets = {
       labels: Array.from(Array(256).keys()),
@@ -126,7 +176,7 @@ class IpView {
       {
         label: 'Grey',
         data: data.grey,
-        backgroundColor: 'rgba(50, 50, 50, 1)'
+        backgroundColor: 'rgba(150, 150, 150, 1)'
       }]
     };
     
@@ -135,7 +185,22 @@ class IpView {
       data: datasets,
       options: {
         scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Valor i'
+            },
+            min: 0,
+            max: 255,
+            beginAtZero: true
+          },
           y: {
+            title: {
+              display: true,
+              text: 'Probabilidad de i'
+            },
+            min: 0,
+            suggestedMax: 0.1,
             beginAtZero: true
           }
         },
@@ -143,7 +208,19 @@ class IpView {
       }
     };
 
-    return new Chart(div, configuration);
+    return new Chart(canvas, configuration);
+  }
+
+  toggleOperationInterface(interfaceDiv) {
+    if (interfaceDiv.style.display === 'block')
+      interfaceDiv.style.display = 'none';
+    else {
+      let interfaces = document.getElementById('interfaces').children;
+      for (let i = 0; i < interfaces.length; i++) {
+        interfaces[i].style.display = 'none';
+      }
+      interfaceDiv.style.display = 'block';
+    }
   }
 }
 

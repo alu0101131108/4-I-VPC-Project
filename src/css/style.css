@@ -55,12 +55,16 @@ html, body {
   margin-top: 10vh;
 }
 
-#original-chart {
-  background:  white;
-  border: solid black 1px;
+#lbs-chartbox {
+  height: 500px;
+  width: 500px;
+  margin: 0 auto;
 }
 
-#result-chart {
-  background:  white;
-  border: solid black 1px;
+#transformation-chartbox {
+  display: none;
+  padding-top: 5vh;
+  height: 500px;
+  width: 500px;
+  margin: 0 auto;
 }

@@ -4,10 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS and JS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    
-    <!-- Custom CSS and JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous" defer></script>
+
+    <!-- Custom CSS and JS -->
     <link rel="stylesheet" type="text/css" href="./../css/style.css">
     <script type="module" src="./../js/main.js" defer></script>
     
@@ -63,6 +64,7 @@
           <button id = "save-btn"> Guardar resultado -></button>
           <input type = "text" id = "save-btn-text" placeholder="ejemplo.jpg">
           <button id = "download-btn"> Descargar resultado</button>
+          <input type = "text" id = "download-btn-text" placeholder="ejemplo.jpg">
         </div>
 
         <!-- Information tab -->
@@ -100,15 +102,45 @@
         <!-- Operations tab -->
         <div class="tab-pane fade" id="ops" role="tabpanel">
           <div id = "operations">
-            <button id = "greyscale-btn"> Escala de grises </button>
-            <button id = "roi-btn"> Generar ROI</button>
+            <div>
+              <button id = "roi-btn"> Generar ROI</button>
+              <button id = "greyscale-btn"> Escala de grises </button>
+            </div>
+            <div>
+              <button id = "lbs-btn"> Lineal por tramos </button>
+              <button id = "adjustBrightContrast-btn"> Ajustar brillo y contraste </button>
+            </div>
+          </div>
+          <div id = "interfaces">
+            <div id = "lbs-interface" style="display: none;">
+              <div>
+                <input type = "text" id = "lbs-startX" placeholder="Inicio X">
+                <input type = "text" id = "lbs-startY" placeholder="Inicio Y">
+                <input type = "text" id = "lbs-endX" placeholder="Final X">
+                <input type = "text" id = "lbs-endY" placeholder="Final Y">
+                <button id = "lbs-addSection-btn"> Añadir tramo</button>
+                <button id = "lbs-apply-btn"> Aplicar</button>
+                <button id = "lbs-reset-btn"> Reiniciar</button>
+              </div>
+              <div id = "lbs-chartbox">
+                <canvas id="lbs-chart"></canvas>
+              </div>
+            </div>
+            <div id = "adjustBrightContrast-interface" style="display: none;">
+              <input type = "text" id = "adjust-bright" placeholder="Brillo">
+              <input type = "text" id = "adjust-contrast" placeholder="Contraste">
+              <button id = "adjustBrightContrast-apply-btn"> Aplicar</button>
+            </div>
+          </div>
+          <div id = "transformation-chartbox">
+            <h3>Gráfica Vin-Vout</h3>
+            <h3>de la transformación</h3>
+            <canvas id = "transformation-chart"></canvas>
           </div>
         </div>
 
       </div>
 
     </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   </body>
 </html>
