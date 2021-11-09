@@ -286,6 +286,14 @@ class IpView {
       (typeof(ids[i]) === 'string' ? document.getElementById(ids[i]) : ids[i]).value = '';
     }
   }
+
+  startSpinner() {
+    document.getElementById('loading-spinner').style.display = 'block';
+  }
+
+  stopSpinner() {
+    document.getElementById('loading-spinner').style.display = 'none';
+  }
 }
 
 export {IpView};
