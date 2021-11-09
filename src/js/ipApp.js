@@ -32,6 +32,7 @@ class IpApp {
   }
 
   refreshView() {
+    // Code to init loading animation.
     setTimeout(() => {
       this.model.updateImageData();
       this.view.updateCanvas(this.model.original, this.model.result);
@@ -40,11 +41,12 @@ class IpApp {
       this.view.updateImageCards(this.model.images);
       this.updateImageButtons();
       this.view.updateRoiButton(this.model.state);
+      // Code to end loading animation.
     }, TIMEOUT_DELAY);
   }
 
   loadDefaultImages() {
-    const DEFAULTS = ['art.jpg', 'landscape.jpg', 'lena.jpg', 'greyscale-lena.jpg', 'lusda.jpg', 'thebronjame.png'];
+    const DEFAULTS = ['greyscale-lena.jpg', 'landscape.jpg', 'art.jpg'];
     for (let image of DEFAULTS) this.model.loadImage(image);
     this.model.setOriginalById(DEFAULTS[0]);
   }
