@@ -67,13 +67,6 @@ class IpApp {
       reader.readAsDataURL(files[0]);
     };
     
-    // ROI button.
-    document.getElementById('roi-btn').onclick = () => {
-      this.model.state = this.model.state !== 'roi' ? 'roi' : 'normal';
-      this.view.updateRoiButton(this.model.state);
-      document.getElementById('transformation-chartbox').style.display = 'none';
-    }
-    
     // Save button.
     document.getElementById('save-btn').onclick = () => {
       if (this.model.result) {
@@ -93,21 +86,28 @@ class IpApp {
   }
 
   setupOperationButtons() {
-    // Helpers
-    
+    // ROI button.
+    document.getElementById('roi-btn').onclick = () => {
+      this.model.state = this.model.state !== 'roi' ? 'roi' : 'normal';
+
+      this.view.updateRoiButton(this.model.state);
+      this.view.closeInterfaces();
+    }
 
     // Greyscale
     document.getElementById('greyscale-btn').onclick = () => {
       this.model.result = this.transformer.greyscale(this.model.original);
-      document.getElementById('transformation-chartbox').style.display = 'none';
+      
       this.refreshView();
+      this.view.closeInterfaces();
     };
 
     // Linear transformation by sections specified by the user.
     document.getElementById('lbs-btn').onclick = () => {
-      this.view.toggleOperationInterface(document.getElementById('lbs-interface'));
-      document.getElementById('lbs-reset-btn').onclick();
-      document.getElementById('transformation-chartbox').style.display = 'none';
+      this.model.temp = [];
+
+      this.view.toggleInterface('lbs-interface');
+      this.view.updateTransformationChart('lbs-chart', this.transformer.createLUT((i) => i));
     };
 
     document.getElementById('lbs-addSection-btn').onclick = () => {
@@ -126,15 +126,9 @@ class IpApp {
           x: endX.value,
           y: endY.value
         }
-      }
-      startX.value = '';
-      startY.value = '';
-      endX.value = '';
-      endY.value = '';
-      
+      }  
       this.model.temp.push(section);
       this.transformer.forceValidSections(this.model.temp);
-
       const LUT = this.transformer.createLUT((input) => {
         for (let i = 0; i < this.model.temp.length; i++) {
           let start = this.model.temp[i].start;
@@ -145,33 +139,31 @@ class IpApp {
         }
         return input;
       });
+
       this.view.updateTransformationChart('lbs-chart', LUT);
+      this.view.clearInputValues([startX, startY, endX, endY]);
     };
     
     document.getElementById('lbs-reset-btn').onclick = () => {
       this.model.temp = [];
+
       this.view.updateTransformationChart('lbs-chart', this.transformer.createLUT((i) => i));
-      document.getElementById('lbs-startX').value = '';
-      document.getElementById('lbs-startY').value = '';
-      document.getElementById('lbs-endX').value = '';
-      document.getElementById('lbs-endY').value = '';
+      this.view.clearInputValues(['lbs-startX', 'lbs-startY', 'lbs-endX', 'lbs-endY']);
     };
     
     document.getElementById('lbs-apply-btn').onclick = () => {
       let usedLUT = [];
       this.model.result = this.transformer.linearBySections(this.model.original, this.model.temp, usedLUT);
       
-      document.getElementById('transformation-chartbox').style.display = 'block';
-      this.view.updateTransformationChart('transformation-chart', usedLUT);
-
-      document.getElementById('lbs-interface').style.display = 'none';
       this.refreshView();
+      this.view.clearInputValues(['lbs-startX', 'lbs-startY', 'lbs-endX', 'lbs-endY']);
+      this.view.closeInterfaces();
+      this.view.updateTransformationChart('transformation-chart', usedLUT);
     };
 
     // Bright and contrast linear adjustment. 
     document.getElementById('adjustBrightContrast-btn').onclick = () => {
-      this.view.toggleOperationInterface(document.getElementById('adjustBrightContrast-interface'));
-      document.getElementById('transformation-chartbox').style.display = 'none';
+      this.view.toggleInterface('adjustBrightContrast-interface');
     };
 
     document.getElementById('adjustBrightContrast-apply-btn').onclick = () => {
@@ -179,17 +171,22 @@ class IpApp {
       const contrastInput = document.getElementById('adjust-contrast');
       const newBright = brightInput.value ? brightInput.value : this.model.original.parameters.bright;
       const newContrast = contrastInput.value ? contrastInput.value : this.model.original.parameters.contrast;
-
       let usedLUT = [];
       this.model.result = this.transformer.linearBrightContrastAdjust(this.model.original, newBright, newContrast, usedLUT);
-
-      document.getElementById('transformation-chartbox').style.display = 'block';
-      this.view.updateTransformationChart('transformation-chart', usedLUT);
-
-      brightInput.value = '';
-      contrastInput.value = '';
-
+      
       this.refreshView();
+      this.view.updateTransformationChart('transformation-chart', usedLUT);
+      this.view.clearInputValues(brightInput, contrastInput);
+    };
+
+    // Ecualize histogram.
+    document.getElementById('ecualize-btn').onclick = () => {
+      let usedLUTs = [];
+      this.model.result = this.transformer.ecualizeHistogram(this.model.original, usedLUTs);
+      
+      this.refreshView();
+      this.view.closeInterfaces();
+      this.view.updateTransformationChart('transformation-chart', false, usedLUTs[0], usedLUTs[1], usedLUTs[2]);
     };
   }
 

@@ -48,7 +48,7 @@
           <li class = "nav-item">
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#ops" type="button" role="tab">Operaciones</button>
           </li>
-          <div id = "loading-spinner" class="spinner-border" role="status"></div>
+          <div id = "loading-spinner" class="spinner-border text-secondary" role="status"></div> 
         </ul>
       </div>
 
@@ -120,11 +120,12 @@
           <div id = "operations">
             <div>
               <button id = "roi-btn"> Generar ROI</button>
-              <button id = "greyscale-btn"> Escala de grises </button>
+              <button id = "greyscale-btn"> Escala De Grises </button>
             </div>
             <div>
-              <button id = "lbs-btn"> Lineal por tramos </button>
-              <button id = "adjustBrightContrast-btn"> Ajustar brillo y contraste </button>
+              <button id = "lbs-btn"> Lineal Por Tramos </button>
+              <button id = "adjustBrightContrast-btn"> Ajustar Brillo Y Contraste </button>
+              <button id = "ecualize-btn"> Ecualizar Histograma</button>
             </div>
           </div>
           <div id = "interfaces">
@@ -134,7 +135,7 @@
                 <input type = "text" id = "lbs-startY" placeholder="Inicio Y">
                 <input type = "text" id = "lbs-endX" placeholder="Final X">
                 <input type = "text" id = "lbs-endY" placeholder="Final Y">
-                <button id = "lbs-addSection-btn"> Añadir tramo</button>
+                <button id = "lbs-addSection-btn"> Añadir Tramo</button>
                 <button id = "lbs-apply-btn"> Aplicar</button>
                 <button id = "lbs-reset-btn"> Reiniciar</button>
               </div>

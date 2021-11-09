@@ -120,17 +120,40 @@ class IpTransformer {
       usedLUT[i] = LUT[i];
     return result;
   }
+
+  // usedLUTs will contain [LUTred, LUTgreen, LUTblue].
+  ecualizeHistogram(original, usedLUTs) {
+    let result = new IpImage(original.p5Image.get(), 'HistogramaEcualizado-' + int(random(100)).toString() + '-' + original.id);
+    const LUTred = this.createLUT((input) => {
+      return round(original.histogramData.accumulated.red[input] * 256) - 1;  // negative values are handled in createLUT.
+    });
+    const LUTgreen = this.createLUT((input) => {
+      return round(original.histogramData.accumulated.green[input] * 256) - 1;
+    });
+    const LUTblue = this.createLUT((input) => {
+      return round(original.histogramData.accumulated.blue[input] * 256) - 1;
+    });
+    result.applyLUT(false, LUTred, LUTgreen, LUTblue);
+
+    usedLUTs.push(LUTred);
+    usedLUTs.push(LUTgreen);
+    usedLUTs.push(LUTblue);
+    return result;
+  }
 }
 
 export {IpTransformer};
 
 // TEMPLATE FOR OPERATION FUNCTION USING LUT.
-// <operation>(original) {
+// <operation>(original, usedLUT) {
 //   let result = new IpImage(original.p5Image.get(), '<operation>-' + int(random(100)).toString() + '-' + original.id);
 //   const LUT = this.createLUT((input) => {
 //     if (input < 50) return 0;
 //     else return 100;
 //   });
 //   result.applyLUT(LUT);
+//   usedLUT.length = 256;
+//   for(let i = 0; i < 256; i++)
+//     usedLUT[i] = LUT[i];
 //   return result;
 // }

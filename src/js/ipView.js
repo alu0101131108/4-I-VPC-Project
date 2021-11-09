@@ -73,7 +73,7 @@ class IpView {
 
     // Original image chart.
     if (this.originalChart) this.originalChart.destroy();
-    this.originalChart = this.generateHistogramChart(document.getElementById('original-chart'), 
+    this.originalChart = this.generateHistogramChart('original-chart', 
       original.histogramData[normal ? 'normal' : 'accumulated']);
 
     // Result image chart (optional).
@@ -81,7 +81,7 @@ class IpView {
     if (!result) return
 
     if (this.resultChart) this.resultChart.destroy();
-    this.resultChart = this.generateHistogramChart(document.getElementById('result-chart'), 
+    this.resultChart = this.generateHistogramChart('result-chart', 
     result.histogramData[normal ? 'normal' : 'accumulated']);
   }
   
@@ -129,16 +129,41 @@ class IpView {
     document.getElementById('roi-btn').style.color = state === 'roi' ? 'red' : '';
   }
 
-  updateTransformationChart(canvas, LUT) {
+  updateTransformationChart(canvas, LUTall, LUTred, LUTgreen, LUTblue) {
+    if (typeof (canvas) === 'string') canvas = document.getElementById(canvas);
+
+    let allBorderColor = 'rgba(255,255,255,1)';
+    let allBackgroundColor = 'rgba(255,255,0,1)';
+    if (LUTall) {
+      LUTred = LUTall;
+      LUTgreen = LUTall;
+      LUTblue = LUTall;
+    }
+    
     const datasets = {
       labels: Array.from(Array(256).keys()),
       datasets: [{
-        label: 'Vout',
-        data: LUT,
-        borderColor: 'rgba(255,255,255,1)',
-        backgroundColor: 'rgba(255,255,0,1)',
+        label: 'red',
+        data: LUTred,
+        borderColor: (LUTall ? allBorderColor : 'rgba(255,255,255,1)'),
+        backgroundColor: (LUTall ? allBackgroundColor : 'rgba(255,0,0,1)'),
         borderDash: [5, 5],
-      }]
+      },
+      {
+        label: 'green',
+        data: LUTgreen,
+        borderColor: (LUTall ? allBorderColor : 'rgba(255,255,255,1)'),
+        backgroundColor: (LUTall ? allBackgroundColor : 'rgba(0,255,0,1)'),
+        borderDash: [5, 5],
+      },
+      {
+        label: 'blue',
+        data: LUTblue,
+        borderColor: (LUTall ? allBorderColor : 'rgba(255,255,255,1)'),
+        backgroundColor: (LUTall ? allBackgroundColor : 'rgba(0,0,255,1)'),
+        borderDash: [5, 5],
+      }
+    ]
     };
 
     const configuration = {
@@ -176,9 +201,12 @@ class IpView {
 
     if (this.transformationChart) this.transformationChart.destroy();
     this.transformationChart = new Chart(canvas, configuration);
+
+    canvas.parentElement.style.display = 'block';
   }
 
   generateHistogramChart(canvas, data) {
+    if (typeof (canvas) === 'string') canvas = document.getElementById(canvas);
 
     const datasets = {
       labels: Array.from(Array(256).keys()),
@@ -238,15 +266,24 @@ class IpView {
     return new Chart(canvas, configuration);
   }
 
-  toggleOperationInterface(interfaceDiv) {
-    if (interfaceDiv.style.display === 'block')
-      interfaceDiv.style.display = 'none';
-    else {
-      let interfaces = document.getElementById('interfaces').children;
-      for (let i = 0; i < interfaces.length; i++) {
-        interfaces[i].style.display = 'none';
-      }
-      interfaceDiv.style.display = 'block';
+  toggleInterface(interfaceDiv) {
+    if (typeof (interfaceDiv) === 'string') interfaceDiv = document.getElementById(interfaceDiv);
+    let prevDisplay = interfaceDiv.style.display;
+    this.closeInterfaces();
+    interfaceDiv.style.display = prevDisplay === 'block' ? 'none' : 'block';
+  }
+
+  closeInterfaces() {
+    let interfaces = document.getElementById('interfaces').children;
+    for (let i = 0; i < interfaces.length; i++) {
+      interfaces[i].style.display = 'none';
+    }
+    document.getElementById('transformation-chartbox').style.display = 'none';
+  }
+
+  clearInputValues(ids) {
+    for (let i = 0; i < ids.length; i++) {
+      (typeof(ids[i]) === 'string' ? document.getElementById(ids[i]) : ids[i]).value = '';
     }
   }
 }

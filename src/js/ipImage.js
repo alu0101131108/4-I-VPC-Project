@@ -6,7 +6,7 @@ class IpImage {
   greyPixels;
   extension;
   size;           // attrs: width, height.
-  histogramData;  // attrs: normal: [r, g, b, grey], accumulated: [r, g, b, grey].
+  histogramData;  // attrs: normal: [red, green, blue, grey], accumulated: [red, green, blue, grey].
   colorRange;     // attrs: low, high.
   parameters;     // attrs: bright, contrast, entropy.
   ready;
@@ -167,12 +167,18 @@ class IpImage {
     return enthropyValue;
   }
 
-  applyLUT(LUT) {
+  applyLUT(LUTall, LUTred, LUTgreen, LUTblue) {
+    if (LUTall) {
+      LUTred = LUTall;
+      LUTgreen = LUTall;
+      LUTblue = LUTall;
+    }
+
     this.p5Image.loadPixels();
     for (let i = 0; i < this.p5Image.pixels.length; i = i + 4) {
-      this.p5Image.pixels[i] = LUT[this.p5Image.pixels[i]];
-      this.p5Image.pixels[i + 1] = LUT[this.p5Image.pixels[i + 1]];
-      this.p5Image.pixels[i + 2] = LUT[this.p5Image.pixels[i + 2]];
+      this.p5Image.pixels[i] = LUTred[this.p5Image.pixels[i]];
+      this.p5Image.pixels[i + 1] = LUTgreen[this.p5Image.pixels[i + 1]];
+      this.p5Image.pixels[i + 2] = LUTblue[this.p5Image.pixels[i + 2]];
       // this.p5Image.pixels[i + 3] is the alpha value, therefore remains static.
     }
     this.p5Image.updatePixels();
