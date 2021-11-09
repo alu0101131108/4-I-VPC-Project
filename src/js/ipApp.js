@@ -16,15 +16,11 @@ class IpApp {
     this.view = new IpView(); 
     this.transformer = new IpTransformer();
   }
-
-  loadDefaultImage(filename) {
-    this.model.loadImage(new IpImage("./../../images/" + filename, filename));
-    this.model.setOriginalById(filename);
-  }
   
   setup() {
     this.setupMenuButtons();
     this.setupOperationButtons();
+    this.loadDefaultImages();
     this.refreshView();
   }
   
@@ -45,6 +41,12 @@ class IpApp {
       this.updateImageButtons();
       this.view.updateRoiButton(this.model.state);
     }, TIMEOUT_DELAY);
+  }
+
+  loadDefaultImages() {
+    const DEFAULTS = ['art.jpg', 'landscape.jpg', 'lena.jpg', 'greyscale-lena.jpg', 'lusda.jpg', 'thebronjame.png'];
+    for (let image of DEFAULTS) this.model.loadImage(image);
+    this.model.setOriginalById(DEFAULTS[0]);
   }
 
   setupMenuButtons() {

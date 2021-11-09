@@ -16,11 +16,17 @@ class IpModel {
     this.state = 'normal';
   }
 
-  loadImage(newImage) {
+  loadImage(value) {
+    let newImage;
+    if (typeof (value) === 'string') {
+      newImage = new IpImage("./../../images/" + value, value);
+    } else {
+      newImage = value;
+    }
     for (let image of this.images) {
       if (image.id === newImage.id) return;
     }
-    this.images.push(newImage);
+    this.images.unshift(newImage);
   }
 
   setOriginalById(id) {

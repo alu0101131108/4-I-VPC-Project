@@ -1,13 +1,9 @@
 import './ipApp.js';
-import './../../libraries/chart.min.js';
 import './../../libraries/p5.min.js';
+import './../../libraries/chart.min.js';
 import { IpApp } from './ipApp.js';
 
 const APP = new IpApp();
-
-function preload() {
-  APP.loadDefaultImage('landscape.jpg');
-}
 
 function setup() {
   APP.setup();
@@ -27,7 +23,6 @@ function mouseReleased() {
     APP.mouseReleasedOnCanvas();
 }
 
-window.preload = preload;
 window.setup = setup;
 window.draw = draw;
 window.mousePressed = mousePressed;
