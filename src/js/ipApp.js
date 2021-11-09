@@ -32,7 +32,7 @@ class IpApp {
   }
 
   refreshView() {
-    // Code to init loading animation.
+    document.getElementById('loading-spinner').style.display = 'block';
     setTimeout(() => {
       this.model.updateImageData();
       this.view.updateCanvas(this.model.original, this.model.result);
@@ -41,7 +41,7 @@ class IpApp {
       this.view.updateImageCards(this.model.images);
       this.updateImageButtons();
       this.view.updateRoiButton(this.model.state);
-      // Code to end loading animation.
+      document.getElementById('loading-spinner').style.display = 'none';
     }, TIMEOUT_DELAY);
   }
 
