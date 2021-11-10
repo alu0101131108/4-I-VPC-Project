@@ -36,7 +36,7 @@ class IpApp {
     setTimeout(() => {
       this.model.updateImageData();
       this.view.updateCanvas(this.model.original, this.model.result);
-      this.view.updateImageInfo(this.model.original);
+      this.view.updateImageInfo(this.model.original, this.model.result);
       this.view.updateHistograms(this.model.original, this.model.result);
       this.view.updateImageCards(this.model.images);
       this.updateImageButtons();

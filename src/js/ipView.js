@@ -9,14 +9,26 @@ class IpView {
 
   constructor() {
     this.infoElements = {
-      extension: document.getElementById('extension'),
-      size: document.getElementById('size'),
-      colorRange: document.getElementById('colorRange'),
-      bright: document.getElementById('bright'),
-      contrast: document.getElementById('contrast'),
-      entropy: document.getElementById('entropy'),
-      mouseXY: document.getElementById('mouseXY'),
-      pixelValues: document.getElementById('pixelValues')
+      original: {
+        extension: document.getElementById('org-extension'),
+        size: document.getElementById('org-size'),
+        colorRange: document.getElementById('org-colorRange'),
+        bright: document.getElementById('org-bright'),
+        contrast: document.getElementById('org-contrast'),
+        entropy: document.getElementById('org-entropy'),
+        mouseXY: document.getElementById('mouseXY'),
+        pixelValues: document.getElementById('pixelValues')
+      },
+      result: {
+        extension: document.getElementById('res-extension'),
+        size: document.getElementById('res-size'),
+        colorRange: document.getElementById('res-colorRange'),
+        bright: document.getElementById('res-bright'),
+        contrast: document.getElementById('res-contrast'),
+        entropy: document.getElementById('res-entropy'),
+        mouseXY: document.getElementById('mouseXY'),
+        pixelValues: document.getElementById('pixelValues')
+      }
     }
   }
 
@@ -42,29 +54,53 @@ class IpView {
   }
 
   // Updates info section based on current original image.
-  updateImageInfo(imageData) {
-    this.infoElements.extension.textContent = 
-        'Extensión: ' + imageData.extension;
-    this.infoElements.size.textContent = 
-        'Tamaño: ' + imageData.size.width + ' x ' + imageData.size.height;
-    this.infoElements.colorRange.textContent = 
-        'Rango de colores: [' + imageData.colorRange.low + 
-        ', ' + imageData.colorRange.high + ']';
-    this.infoElements.bright.textContent = 
-        'Brillo: ' + imageData.parameters.bright;
-    this.infoElements.contrast.textContent = 
-        'Contraste: ' + imageData.parameters.contrast;
-    this.infoElements.entropy.textContent = 
-        'Entropía: ' + imageData.parameters.entropy;
+  updateImageInfo(originalImageData, resultImageData) {
+    this.infoElements.original.extension.textContent = 
+        'Extensión: ' + originalImageData.extension;
+    this.infoElements.original.size.textContent = 
+        'Tamaño: ' + originalImageData.size.width + ' x ' + originalImageData.size.height;
+    this.infoElements.original.colorRange.textContent = 
+        'Rango de colores: [' + originalImageData.colorRange.low + 
+        ', ' + originalImageData.colorRange.high + ']';
+    this.infoElements.original.bright.textContent = 
+        'Brillo: ' + originalImageData.parameters.bright;
+    this.infoElements.original.contrast.textContent = 
+        'Contraste: ' + originalImageData.parameters.contrast;
+    this.infoElements.original.entropy.textContent = 
+        'Entropía: ' + originalImageData.parameters.entropy;
+    if (resultImageData) {
+      document.getElementById('resImgInfo').style.display = 'inline';
+      this.infoElements.result.extension.textContent = 
+          'Extensión: ' + resultImageData.extension;
+      this.infoElements.result.size.textContent = 
+          'Tamaño: ' + resultImageData.size.width + ' x ' + resultImageData.size.height;
+      this.infoElements.result.colorRange.textContent = 
+          'Rango de colores: [' + resultImageData.colorRange.low + 
+          ', ' + resultImageData.colorRange.high + ']';
+      this.infoElements.result.bright.textContent = 
+          'Brillo: ' + resultImageData.parameters.bright;
+      this.infoElements.result.contrast.textContent = 
+          'Contraste: ' + resultImageData.parameters.contrast;
+      this.infoElements.result.entropy.textContent = 
+          'Entropía: ' + resultImageData.parameters.entropy;
+    }
   }
 
   // Updates info section based on user input.
   updateInputInfo(inputData) {
-    this.infoElements.mouseXY.textContent = 
-    'Imagen: ' + inputData.image + ',  X: ' + inputData.x + ',  Y: ' + inputData.y;
-    this.infoElements.pixelValues.textContent = 
-    'R: ' + inputData.r + ',  G: ' + inputData.g + ',  B: ' + inputData.b + ',  A: ' + 
-    inputData.a + ',  Gris: ' + inputData.grey;
+    if (inputData.image === 'Original') {
+      this.infoElements.original.mouseXY.textContent = 
+      'X: ' + inputData.x + ',  Y: ' + inputData.y;
+      this.infoElements.original.pixelValues.textContent = 
+      'R: ' + inputData.r + ',  G: ' + inputData.g + ',  B: ' + inputData.b + ',  A: ' + 
+      inputData.a + ',  Gris: ' + inputData.grey;
+    } else if (inputData.image === 'Resultado') {
+      this.infoElements.result.mouseXY.textContent = 
+      'X: ' + inputData.x + ',  Y: ' + inputData.y;
+      this.infoElements.result.pixelValues.textContent = 
+      'R: ' + inputData.r + ',  G: ' + inputData.g + ',  B: ' + inputData.b + ',  A: ' + 
+      inputData.a + ',  Gris: ' + inputData.grey;
+    }
   }
   
   // Updates histograms according to new original and result images.

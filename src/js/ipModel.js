@@ -51,6 +51,9 @@ class IpModel {
     let selectedA = '-';
     let selectedGrey = '-';
 
+    document.getElementById('mouseXY').style.display = 'none';
+    document.getElementById('pixelValues').style.display = 'none';
+
     if (inputX >= 0 && inputX < width && inputY >= 0 && inputY < height) {
       const PIXEL_VALUES = get(inputX, inputY);
       selectedR = PIXEL_VALUES[0];
@@ -60,12 +63,16 @@ class IpModel {
       selectedGrey = round(0.299 * selectedR + 0.587 * selectedG + 0.114 * selectedB);  // NTSC
       // Mouse on original image.
       if (inputX < this.original.size.width && inputY < this.original.size.height) {
+        document.getElementById('mouseXY').style.display = 'inline';
+        document.getElementById('pixelValues').style.display = 'inline';
         selectedImage = 'Original';
         selectedX = inputX;
         selectedY = inputY;
       }
       // Mouse on result image.
       else if (inputX >= this.original.size.width && inputY < this.result.size.height) {
+        document.getElementById('mouseXY').style.display = 'inline';
+        document.getElementById('pixelValues').style.display = 'inline';
         selectedImage = 'Resultado';
         selectedX = inputX - this.original.size.width;
         selectedY = inputY;

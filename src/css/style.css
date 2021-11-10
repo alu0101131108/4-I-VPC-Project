@@ -20,12 +20,19 @@ html, body {
   color: white;
 }
 
-.btn {
+.btn, .btn-outline-primary, .btn-check:active+.btn-outline-primary, 
+.btn-check:checked+.btn-outline-primary, .btn-outline-primary.active, 
+.btn-outline-primary.dropdown-toggle.show, .btn-outline-primary:active {
+  color: white;
   background-color: #5D0000;
   border-color: white;
 }
 
-.btn:hover {
+.btn-outline-primary:not(:checked) {
+  background-color: #1C1C21;
+}
+
+.btn:hover, .btn-outline-primary:checked:hover{
   background-color: #370000;
   border-color: white;
 }
@@ -71,6 +78,16 @@ html, body {
   color: white;
 }
 
+.list-group-item-light {
+  background-color: #1C1C21;
+  border-color: white;
+  color: white;
+}
+
+#org-title, #res-title {
+  background-color: #5D0000;
+}
+
 #icon-box {
   margin: auto;
 }
@@ -99,17 +116,12 @@ html, body {
   border: 1px solid #ffffff;    /* creates padding around scroll thumb */
 }
 
+#canvas::-webkit-scrollbar-thumb:hover {
+  background-color: #370000;
+}
+
 #operations {
   text-align: center;
-  padding: 3vh;
-}
-
-#information {
-  text-align: center;
-  padding: 3vh;
-}
-
-#chartboxes {
   padding: 3vh;
 }
 
@@ -120,7 +132,6 @@ html, body {
 #result-chartbox {
   display: none;
   height: 800px;
-  margin-top: 10vh;
 }
 
 #lbs-chartbox {
