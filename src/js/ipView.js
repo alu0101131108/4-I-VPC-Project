@@ -129,11 +129,11 @@ class IpView {
     document.getElementById('roi-btn').style.color = state === 'roi' ? 'red' : '';
   }
 
-  updateTransformationChart(canvas, LUTall, LUTred, LUTgreen, LUTblue) {
+  updateTransformationChart(canvas, LUTall, LUTred, LUTgreen, LUTblue, altStyle) {
     if (typeof (canvas) === 'string') canvas = document.getElementById(canvas);
 
-    let allBorderColor = 'rgba(255,255,255,1)';
-    let allBackgroundColor = 'rgba(255,255,0,1)';
+    let altBorderColor = 'rgba(255,255,255,1)';
+    let altBackgroundColor = 'rgba(255,255,0,1)';
     if (LUTall) {
       LUTred = LUTall;
       LUTgreen = LUTall;
@@ -145,22 +145,22 @@ class IpView {
       datasets: [{
         label: 'red',
         data: LUTred,
-        borderColor: (LUTall ? allBorderColor : 'rgba(255,255,255,1)'),
-        backgroundColor: (LUTall ? allBackgroundColor : 'rgba(255,0,0,1)'),
+        borderColor: (altStyle ? altBorderColor : 'rgba(255,255,255,1)'),
+        backgroundColor: (altStyle ? altBackgroundColor : 'rgba(255,0,0,1)'),
         borderDash: [5, 5],
       },
       {
         label: 'green',
         data: LUTgreen,
-        borderColor: (LUTall ? allBorderColor : 'rgba(255,255,255,1)'),
-        backgroundColor: (LUTall ? allBackgroundColor : 'rgba(0,255,0,1)'),
+        borderColor: (altStyle ? altBorderColor : 'rgba(255,255,255,1)'),
+        backgroundColor: (altStyle ? altBackgroundColor : 'rgba(0,255,0,1)'),
         borderDash: [5, 5],
       },
       {
         label: 'blue',
         data: LUTblue,
-        borderColor: (LUTall ? allBorderColor : 'rgba(255,255,255,1)'),
-        backgroundColor: (LUTall ? allBackgroundColor : 'rgba(0,0,255,1)'),
+        borderColor: (altStyle ? altBorderColor : 'rgba(255,255,255,1)'),
+        backgroundColor: (altStyle ? altBackgroundColor : 'rgba(0,0,255,1)'),
         borderDash: [5, 5],
       }
     ]
@@ -203,6 +203,17 @@ class IpView {
     this.transformationChart = new Chart(canvas, configuration);
 
     canvas.parentElement.style.display = 'block';
+  }
+
+  updateImagesSelector(id, images) {
+    let selector = document.getElementById(id);
+    while (selector.firstChild) selector.removeChild(selector.firstChild);
+    for (let image of images) {
+      let option = document.createElement('option');
+      option.text = image.id;
+      selector.appendChild(option);
+    }
+    selector.firstChild.selected = true;
   }
 
   generateHistogramChart(canvas, data) {

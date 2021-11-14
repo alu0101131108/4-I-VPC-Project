@@ -133,11 +133,55 @@ class IpTransformer {
     const LUTblue = this.createLUT((input) => {
       return round(original.histogramData.accumulated.blue[input] * 256) - 1;
     });
-    result.applyLUT(false, LUTred, LUTgreen, LUTblue);
+    result.applyLUT(undefined, LUTred, LUTgreen, LUTblue);
 
     usedLUTs.push(LUTred);
     usedLUTs.push(LUTgreen);
     usedLUTs.push(LUTblue);
+    return result;
+  }
+
+  histogramEspecification(original, selected, usedLUTs) {
+    let result = new IpImage(original.p5Image.get(), 'Histograma-De-' + selected.id + '-En-' + int(random(100)).toString() + '-' + original.id);
+
+    const histogramSpecificationLUT = (color) => {
+      let oldHistogram = original.histogramData.accumulated[color];
+      let newHistogram = selected.histogramData.accumulated[color];
+      let LUT = [];
+      for (let value = 0; value < 256; value++) {
+        let matchingValue;
+        for (let selected = 0; selected < 256; selected++) {
+          // console.log(value, oldHistogram[value], selected, newHistogram[selected]);
+          if (newHistogram[selected] >= oldHistogram[value]) {
+            matchingValue = selected;
+            break;
+          }
+        }
+        LUT.push(matchingValue);
+      }
+      return LUT;
+    }
+
+    const LUTred = histogramSpecificationLUT('red');
+    const LUTgreen = histogramSpecificationLUT('green');
+    const LUTblue = histogramSpecificationLUT('blue');
+    result.applyLUT(undefined, LUTred, LUTgreen, LUTblue);
+
+    usedLUTs.push(LUTred);
+    usedLUTs.push(LUTgreen);
+    usedLUTs.push(LUTblue);
+    return result;
+  }
+
+  gammaCorrection(original, gamma, usedLUT) {
+    let result = new IpImage(original.p5Image.get(), 'CorreccionGamma-' + int(random(100)).toString() + '-' + original.id);
+    let LUT = this.createLUT((input) => {
+      return round(pow(input / 255, gamma) * 255);
+    });
+    result.applyLUT(LUT);
+    usedLUT.length = 256;
+    for(let i = 0; i < 256; i++)
+      usedLUT[i] = LUT[i];
     return result;
   }
 }

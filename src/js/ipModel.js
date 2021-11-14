@@ -84,6 +84,14 @@ class IpModel {
     };
   }
   
+  imageById(id) {
+    for (let i = 0; i < this.images.length; i++) {
+      if (this.images[i].id === id) {
+        return this.images[i];
+      }
+    }
+    console.log('ERROR - View imageById() did not find requested id');
+  }
 }
 
 export {IpModel};

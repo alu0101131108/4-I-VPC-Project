@@ -121,11 +121,14 @@
             <div>
               <button id = "roi-btn"> Generar ROI</button>
               <button id = "greyscale-btn"> Escala De Grises </button>
+              <button id = "compare-btn"> Comparar </button>
             </div>
             <div>
               <button id = "lbs-btn"> Lineal Por Tramos </button>
               <button id = "adjustBrightContrast-btn"> Ajustar Brillo Y Contraste </button>
               <button id = "ecualize-btn"> Ecualizar Histograma</button>
+              <button id = "histogramEsp-btn"> Especificación del Histograma</button>
+              <button id = "gamma-btn"> Corrección Gamma </button>            
             </div>
           </div>
           <div id = "interfaces">
@@ -148,6 +151,18 @@
               <input type = "text" id = "adjust-contrast" placeholder="Contraste">
               <button id = "adjustBrightContrast-apply-btn"> Aplicar</button>
             </div>
+            <div id = "histogramEsp-interface" class="col-md-8 offset-md-2 w-60" style="display: none;">
+              <select id = "histogramEsp-selector" class="form-select mb-3" multiple></select>
+              <button id = "histogramEsp-apply-btn" class="offset-md-6"> Aplicar</button>
+            </div>
+            <div id = "compare-interface" class="col-md-8 offset-md-2 w-60" style="display: none;">
+              <select id = "compare-selector" class="form-select mb-3" multiple></select>
+              <button id = "compare-apply-btn" class="offset-md-6"> Aplicar</button>
+            </div>
+            <div id = "gamma-interface" class="col-md-8 offset-md-5" style="display: none;">
+              <input type = "text" id = "gamma-input" placeholder="Gamma">
+              <button id = "gamma-apply-btn"> Aplicar</button>
+            </div>
           </div>
           <div id = "transformation-chartbox">
             <hr>
@@ -158,9 +173,7 @@
             <hr>
           </div>
         </div>
-
       </div>
-
     </div>
   </body>
 </html>

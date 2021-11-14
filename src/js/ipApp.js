@@ -92,11 +92,24 @@ class IpApp {
 
       this.view.updateRoiButton(this.model.state);
       this.view.closeInterfaces();
-    }
+    };
 
-    // Greyscale
+    // Greyscale.
     document.getElementById('greyscale-btn').onclick = () => {
       this.model.result = this.transformer.greyscale(this.model.original);
+      
+      this.refreshView();
+      this.view.closeInterfaces();
+    };
+
+    // Compare to another image.
+    document.getElementById('compare-btn').onclick = () => {
+      this.view.updateImagesSelector('compare-selector', this.model.images);
+      this.view.toggleInterface('compare-interface');
+    };
+    document.getElementById('compare-apply-btn').onclick = () => {
+      let selected = document.getElementById('compare-selector').value;
+      this.model.result = this.model.imageById(selected);
       
       this.refreshView();
       this.view.closeInterfaces();
@@ -107,7 +120,7 @@ class IpApp {
       this.model.temp = [];
 
       this.view.toggleInterface('lbs-interface');
-      this.view.updateTransformationChart('lbs-chart', this.transformer.createLUT((i) => i));
+      this.view.updateTransformationChart('lbs-chart', this.transformer.createLUT((i) => i), undefined, undefined, undefined, true);
     };
 
     document.getElementById('lbs-addSection-btn').onclick = () => {
@@ -140,7 +153,7 @@ class IpApp {
         return input;
       });
 
-      this.view.updateTransformationChart('lbs-chart', LUT);
+      this.view.updateTransformationChart('lbs-chart', LUT, undefined, undefined, undefined, true);
       this.view.clearInputValues([startX, startY, endX, endY]);
     };
     
@@ -175,6 +188,7 @@ class IpApp {
       this.model.result = this.transformer.linearBrightContrastAdjust(this.model.original, newBright, newContrast, usedLUT);
       
       this.refreshView();
+      this.view.closeInterfaces();
       this.view.updateTransformationChart('transformation-chart', usedLUT);
       this.view.clearInputValues(brightInput, contrastInput);
     };
@@ -187,6 +201,38 @@ class IpApp {
       this.refreshView();
       this.view.closeInterfaces();
       this.view.updateTransformationChart('transformation-chart', false, usedLUTs[0], usedLUTs[1], usedLUTs[2]);
+    };
+
+    // Histogram Specification.
+    document.getElementById('histogramEsp-btn').onclick = () => {
+      this.view.updateImagesSelector('histogramEsp-selector', this.model.images);
+      this.view.toggleInterface('histogramEsp-interface');
+    };
+    document.getElementById('histogramEsp-apply-btn').onclick = () => {
+      let usedLUTs = [];
+      let selectedId = document.getElementById('histogramEsp-selector').value;
+      let selected = this.model.imageById(selectedId);
+      selected.updateData();
+      this.model.result = this.transformer.histogramEspecification(this.model.original, selected, usedLUTs);
+      
+      this.refreshView();
+      this.view.closeInterfaces();
+      this.view.updateTransformationChart('transformation-chart', false, usedLUTs[0], usedLUTs[1], usedLUTs[2]);
+    };
+
+    // Gamma correction.
+    document.getElementById('gamma-btn').onclick = () => {
+      this.view.toggleInterface('gamma-interface');
+    };
+    document.getElementById('gamma-apply-btn').onclick = () => {
+      let gamma = document.getElementById('gamma-input');
+      let usedLUT = [];
+      this.model.result = this.transformer.gammaCorrection(this.model.original, gamma.value, usedLUT);
+      
+      this.refreshView();
+      this.view.closeInterfaces();
+      this.view.updateTransformationChart('transformation-chart', usedLUT);
+      this.view.clearInputValues(gamma);
     };
   }
 
