@@ -162,7 +162,8 @@ class IpView {
   }
 
   updateRoiButton(state) {
-    document.getElementById('roi-btn').style.color = state === 'roi' ? 'red' : '';
+    document.getElementById('roi-btn').className = state === 'roi' ? 'col btn pressed' : 'col btn';
+    document.getElementById('defaultCanvas0').style.cursor = state === 'roi' ? 'crosshair' : 'auto';
   }
 
   updateTransformationChart(canvas, LUTall, LUTred, LUTgreen, LUTblue, altStyle) {
