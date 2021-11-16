@@ -9,11 +9,17 @@ class IpModel {
   inputData;  // attrs: image, x, y, r, g, b, a, grey. Gets updated each frame.
   temp;
   state;
+  colorPicked;
   
   constructor() {
     this.images = [];
     this.temp = [];
     this.state = 'normal';
+    this.colorPicked = {
+      red: 255,
+      green: 0,
+      blue: 0
+    }
   }
 
   loadImage(value) {

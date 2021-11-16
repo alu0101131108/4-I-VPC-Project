@@ -46,7 +46,7 @@ class IpApp {
   }
 
   loadDefaultImages() {
-    const DEFAULTS = ['greyscale-lena.jpg', 'landscape.jpg', 'art.jpg'];
+    const DEFAULTS = ['greyscale-lena.jpg', 'landscape.jpg', 'art.jpg', 'tanque-anterior.jpg', 'tanque-posterior.jpg'];
     for (let image of DEFAULTS) this.model.loadImage(image);
     this.model.setOriginalById(DEFAULTS[0]);
   }
@@ -109,6 +109,7 @@ class IpApp {
     };
     document.getElementById('compare-apply-btn').onclick = () => {
       let selected = document.getElementById('compare-selector').value;
+      if (!selected) return;
       this.model.result = this.model.imageById(selected);
       
       this.refreshView();
@@ -206,14 +207,21 @@ class IpApp {
     // Histogram Specification.
     document.getElementById('histogramEsp-btn').onclick = () => {
       this.view.updateImagesSelector('histogramEsp-selector', this.model.images);
+      this.view.updateOperationInterfaceHistogram('histogramEsp-chart');
       this.view.toggleInterface('histogramEsp-interface');
+    };
+    document.getElementById('histogramEsp-selector').onchange = () => {
+      let selected = this.model.imageById(document.getElementById('histogramEsp-selector').value);
+      selected.updateData();
+      this.view.updateOperationInterfaceHistogram('histogramEsp-chart', selected.histogramData.normal);
     };
     document.getElementById('histogramEsp-apply-btn').onclick = () => {
       let usedLUTs = [];
       let selectedId = document.getElementById('histogramEsp-selector').value;
+      if (!selectedId) return;
       let selected = this.model.imageById(selectedId);
       selected.updateData();
-      this.model.result = this.transformer.histogramEspecification(this.model.original, selected, usedLUTs);
+      this.model.result = this.transformer.histogramSpecification(this.model.original, selected, usedLUTs);
       
       this.refreshView();
       this.view.closeInterfaces();
@@ -234,6 +242,54 @@ class IpApp {
       this.view.updateTransformationChart('transformation-chart', usedLUT);
       this.view.clearInputValues(gamma);
     };
+
+    // Difference of images.
+    document.getElementById('difference-btn').onclick = () => {
+      const sameSizeFilter = (image) => {
+        return this.model.original.size.width === image.size.width && this.model.original.size.height === image.size.height;
+      };
+      this.view.updateImagesSelector('difference-selector', this.model.images, sameSizeFilter);
+      this.view.updateOperationInterfaceHistogram('difference-chart');
+      this.view.toggleInterface('difference-interface');
+    };
+    document.getElementById('difference-selector').onchange = () => {
+      let selected = this.model.imageById(document.getElementById('difference-selector').value);
+      selected.updateData();
+      let difference = this.transformer.generateDifferenceImage(this.model.original, selected);
+      difference.updateData();
+      this.view.updateOperationInterfaceHistogram('difference-chart', difference.histogramData.normal);
+    };
+    document.getElementById('difference-threshold-range').onchange = () => {
+      let threshold = document.getElementById('difference-threshold-range').value;
+      document.getElementById('difference-threshold-label').textContent = 'Umbral: ' + threshold;
+    };
+    document.getElementById('difference-genDif-btn').onclick = () => {
+      let selectedId = document.getElementById('difference-selector').value;
+      if (!selectedId) return;
+      let selected = this.model.imageById(selectedId);
+      this.model.result = this.transformer.generateDifferenceImage(this.model.original, selected);
+      
+      this.refreshView();
+      this.view.closeInterfaces();
+    };
+    document.getElementById('difference-genMap-btn').onclick = () => {
+      let selectedId = document.getElementById('difference-selector').value;
+      if (!selectedId) return;
+      let selected = this.model.imageById(selectedId);
+      let threshold = document.getElementById('difference-threshold-range').value;
+      this.model.result = this.transformer.generateDifferenceMap(this.model.original, selected, threshold, this.model.colorPicked);
+      
+      this.refreshView();
+      this.view.closeInterfaces();
+    };
+    this.view.setColorPicker('difference-colorpicker', 'red', (color) => {
+      document.getElementById('difference-colorpicker').style.background = color.rgbaString;
+      this.model.colorPicked = {
+        red: color.rgba[0],
+        green: color.rgba[1],
+        blue: color.rgba[2],
+      };
+    });
   }
 
   updateImageButtons() {

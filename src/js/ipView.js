@@ -4,7 +4,7 @@ class IpView {
   renderer;
   originalChart;
   resultChart;
-  transformationChart;
+  tempChart;
   infoElements;
 
   constructor() {
@@ -210,7 +210,7 @@ class IpView {
           x: {
             title: {
               display: true,
-              text: 'Vout'
+              text: 'RGB in'
             },
             max: 255,
             min: 0,
@@ -219,7 +219,7 @@ class IpView {
           y: {
             title: {
               display: true,
-              text: 'Vin'
+              text: 'RGB out'
             },
             max: 255,
             min: 0,
@@ -235,21 +235,31 @@ class IpView {
       }
     };
 
-    if (this.transformationChart) this.transformationChart.destroy();
-    this.transformationChart = new Chart(canvas, configuration);
+    if (this.tempChart) this.tempChart.destroy();
+    this.tempChart = new Chart(canvas, configuration);
 
     canvas.parentElement.style.display = 'block';
   }
 
-  updateImagesSelector(id, images) {
+  updateImagesSelector(id, images, filter) {
     let selector = document.getElementById(id);
     while (selector.firstChild) selector.removeChild(selector.firstChild);
     for (let image of images) {
+      if (filter) {
+        image.updateData();
+        if (!filter(image)) continue;
+      } 
       let option = document.createElement('option');
       option.text = image.id;
       selector.appendChild(option);
     }
-    selector.firstChild.selected = true;
+  }
+
+  updateOperationInterfaceHistogram(canvas, data) {
+    if (typeof (canvas) === 'string') canvas = document.getElementById(canvas);
+    if (this.tempChart) this.tempChart.destroy();
+    if (!data) data = {red: [], green: [], blue: []};
+    this.tempChart = this.generateHistogramChart(canvas, data);
   }
 
   generateHistogramChart(canvas, data) {
@@ -319,7 +329,7 @@ class IpView {
     this.closeInterfaces();
     interfaceDiv.style.display = prevDisplay === 'block' ? 'none' : 'block';
   }
-
+  
   closeInterfaces() {
     let interfaces = document.getElementById('interfaces').children;
     for (let i = 0; i < interfaces.length; i++) {
@@ -340,6 +350,17 @@ class IpView {
 
   stopSpinner() {
     document.getElementById('loading-spinner').style.display = 'none';
+  }
+
+  setColorPicker(colorPickerButton, defaultColor, changeHandler) {
+    if (typeof (colorPickerButton) === 'string') colorPickerButton = document.getElementById(colorPickerButton);
+    const colorPicker = new Picker(colorPickerButton);
+    colorPicker.setOptions({
+      color: defaultColor,
+      alpha: false,
+      editor: false
+    });
+    colorPicker.onChange = changeHandler;
   }
 }
 

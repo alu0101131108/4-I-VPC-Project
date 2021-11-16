@@ -138,7 +138,7 @@ body::-webkit-scrollbar {
   height: 800px;
 }
 
-#lbs-chartbox {
+#lbs-chartbox, #histogramEsp-chartbox, #difference-chartbox {
   height: 500px;
   width: 500px;
   margin: 0 auto;
@@ -146,8 +146,15 @@ body::-webkit-scrollbar {
 
 #transformation-chartbox {
   display: none;
-  padding-top: 5vh;
   height: 500px;
   width: 500px;
   margin: 0 auto;
+}
+
+#ops {
+  height: 120%;
+}
+
+#images {
+  padding-left: 5vh;
 }

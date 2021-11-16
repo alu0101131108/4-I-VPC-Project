@@ -141,8 +141,8 @@ class IpTransformer {
     return result;
   }
 
-  histogramEspecification(original, selected, usedLUTs) {
-    let result = new IpImage(original.p5Image.get(), 'Histograma-De-' + selected.id + '-En-' + int(random(100)).toString() + '-' + original.id);
+  histogramSpecification(original, selected, usedLUTs) {
+    let result = new IpImage(original.p5Image.get(), '' + int(random(100)).toString() + 'Histograma-De-' + selected.id + '-En-' + original.id);
 
     const histogramSpecificationLUT = (color) => {
       let oldHistogram = original.histogramData.accumulated[color];
@@ -184,20 +184,41 @@ class IpTransformer {
       usedLUT[i] = LUT[i];
     return result;
   }
+
+  generateDifferenceImage(original, subtrahend) {
+    subtrahend.p5Image.loadPixels();
+    let subtrahendPixels = subtrahend.p5Image.pixels;
+    let result = new IpImage(original.p5Image.get(), 'Diferencia-'+ int(random(100)).toString() + '-' + subtrahend.id + '-' + original.id);
+    result.p5Image.loadPixels();
+    let originalPixels = result.p5Image.pixels;
+    for (let i = 0; i < originalPixels.length; i += 4) {
+      originalPixels[i] = abs(originalPixels[i] - subtrahendPixels[i]);
+      originalPixels[i + 1] = abs(originalPixels[i + 1] - subtrahendPixels[i + 1]);
+      originalPixels[i + 2] = abs(originalPixels[i + 2] - subtrahendPixels[i + 2]);
+    }
+    result.p5Image.updatePixels();
+    return result;
+  }
+
+  generateDifferenceMap(original, subtrahend, threshold, color) {
+    subtrahend.p5Image.loadPixels();
+    let subtrahendPixels = subtrahend.p5Image.pixels;
+    let result = new IpImage(original.p5Image.get(), 'MapaCambios-'+ int(random(100)).toString() + '-' + subtrahend.id + '-' + original.id);
+    result.p5Image.loadPixels();
+    let originalPixels = result.p5Image.pixels;
+    for (let i = 0; i < originalPixels.length; i += 4) {
+      let redDif =  abs(originalPixels[i] - subtrahendPixels[i]);
+      let greenDif = abs(originalPixels[i + 1] - subtrahendPixels[i + 1]);
+      let blueDif = abs(originalPixels[i + 2] - subtrahendPixels[i + 2]);
+      if (redDif >= threshold || greenDif >= threshold || blueDif >= threshold) {
+        originalPixels[i] = color.red;
+        originalPixels[i + 1] = color.green;
+        originalPixels[i + 2] = color.blue;
+      }
+    }
+    result.p5Image.updatePixels();
+    return result;
+  }
 }
 
 export {IpTransformer};
-
-// TEMPLATE FOR OPERATION FUNCTION USING LUT.
-// <operation>(original, usedLUT) {
-//   let result = new IpImage(original.p5Image.get(), '<operation>-' + int(random(100)).toString() + '-' + original.id);
-//   const LUT = this.createLUT((input) => {
-//     if (input < 50) return 0;
-//     else return 100;
-//   });
-//   result.applyLUT(LUT);
-//   usedLUT.length = 256;
-//   for(let i = 0; i < 256; i++)
-//     usedLUT[i] = LUT[i];
-//   return result;
-// }
