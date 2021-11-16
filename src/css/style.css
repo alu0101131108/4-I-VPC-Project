@@ -36,9 +36,10 @@ body::-webkit-scrollbar {
   background-color: #1C1C21;
 }
 
-.btn:hover, .btn-outline-primary:checked:hover{
+.btn:hover, .pressed, .btn-outline-primary:checked:hover{
   background-color: #370000;
   border-color: white;
+  color: white;
 }
 
 .card {
