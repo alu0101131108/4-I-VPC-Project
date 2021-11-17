@@ -1,11 +1,10 @@
 html, body {
   background-color: #1C1C21;
   color: white;
-  overflow-x: hidden;
 }
 
-body::-webkit-scrollbar {
-  display: none;
+html {
+  overflow-x: hidden;
 }
 
 #title, footer{
@@ -99,11 +98,7 @@ body::-webkit-scrollbar {
 
 #add-icon {
   height: 150px;
-  width: 150;
-}
-
-#canvas-grid {
-  margin: auto;
+  width: 150px;
 }
 
 #canvas {
@@ -127,7 +122,6 @@ body::-webkit-scrollbar {
 
 #operations {
   text-align: center;
-  padding: 3vh;
 }
 
 #original-chartbox {
@@ -154,8 +148,4 @@ body::-webkit-scrollbar {
 
 #ops {
   height: 120%;
-}
-
-#images {
-  padding-left: 5vh;
 }
