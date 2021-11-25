@@ -75,7 +75,6 @@ class IpApp {
         this.updateImageButtons();
       }
     };
-
     // INFO SECTION: Histogram type radio buttons.
     document.getElementById('choice-reg').onchange = () => {
       this.view.updateHistograms(this.model.original, this.model.result);
@@ -83,6 +82,11 @@ class IpApp {
     document.getElementById('choice-acc').onchange = () => {
       this.view.updateHistograms(this.model.original, this.model.result);
     };
+
+    // Operations tab button.
+    document.getElementById('showOperations-btn').onclick = () => {
+      this.view.closeInterfaces();
+    }
   }
 
   setupOperationButtons() {
@@ -96,10 +100,11 @@ class IpApp {
 
     // Greyscale.
     document.getElementById('greyscale-btn').onclick = () => {
+      this.view.startSpinner();
       this.model.result = this.transformer.greyscale(this.model.original);
       
-      this.refreshView();
       this.view.closeInterfaces();
+      this.refreshView();
     };
 
     // Compare to another image.
@@ -108,12 +113,14 @@ class IpApp {
       this.view.toggleInterface('compare-interface');
     };
     document.getElementById('compare-apply-btn').onclick = () => {
+      this.view.startSpinner();
       let selected = document.getElementById('compare-selector').value;
       if (!selected) return;
       this.model.result = this.model.imageById(selected);
       
-      this.refreshView();
+      document.getElementById('showInfo-btn').click();
       this.view.closeInterfaces();
+      this.refreshView();
     };
 
     // Linear transformation by sections specified by the user.
@@ -166,13 +173,14 @@ class IpApp {
     };
     
     document.getElementById('lbs-apply-btn').onclick = () => {
+      this.view.startSpinner();
       let usedLUT = [];
       this.model.result = this.transformer.linearBySections(this.model.original, this.model.temp, usedLUT);
       
-      this.refreshView();
       this.view.clearInputValues(['lbs-startX', 'lbs-startY', 'lbs-endX', 'lbs-endY']);
       this.view.closeInterfaces();
       this.view.updateTransformationChart('transformation-chart', usedLUT);
+      this.refreshView();
     };
 
     // Bright and contrast linear adjustment. 
@@ -181,6 +189,7 @@ class IpApp {
     };
 
     document.getElementById('adjustBrightContrast-apply-btn').onclick = () => {
+      this.view.startSpinner();
       const brightInput = document.getElementById('adjust-bright');
       const contrastInput = document.getElementById('adjust-contrast');
       const newBright = brightInput.value ? brightInput.value : this.model.original.parameters.bright;
@@ -188,20 +197,21 @@ class IpApp {
       let usedLUT = [];
       this.model.result = this.transformer.linearBrightContrastAdjust(this.model.original, newBright, newContrast, usedLUT);
       
-      this.refreshView();
       this.view.closeInterfaces();
       this.view.updateTransformationChart('transformation-chart', usedLUT);
       this.view.clearInputValues(brightInput, contrastInput);
+      this.refreshView();
     };
 
     // Ecualize histogram.
     document.getElementById('ecualize-btn').onclick = () => {
+      this.view.startSpinner();
       let usedLUTs = [];
       this.model.result = this.transformer.ecualizeHistogram(this.model.original, usedLUTs);
       
-      this.refreshView();
       this.view.closeInterfaces();
       this.view.updateTransformationChart('transformation-chart', false, usedLUTs[0], usedLUTs[1], usedLUTs[2]);
+      this.refreshView();
     };
 
     // Histogram Specification.
@@ -216,6 +226,7 @@ class IpApp {
       this.view.updateOperationInterfaceHistogram('histogramEsp-chart', selected.histogramData.normal);
     };
     document.getElementById('histogramEsp-apply-btn').onclick = () => {
+      this.view.startSpinner();
       let usedLUTs = [];
       let selectedId = document.getElementById('histogramEsp-selector').value;
       if (!selectedId) return;
@@ -223,9 +234,9 @@ class IpApp {
       selected.updateData();
       this.model.result = this.transformer.histogramSpecification(this.model.original, selected, usedLUTs);
       
-      this.refreshView();
       this.view.closeInterfaces();
       this.view.updateTransformationChart('transformation-chart', false, usedLUTs[0], usedLUTs[1], usedLUTs[2]);
+      this.refreshView();
     };
 
     // Gamma correction.
@@ -233,14 +244,15 @@ class IpApp {
       this.view.toggleInterface('gamma-interface');
     };
     document.getElementById('gamma-apply-btn').onclick = () => {
+      this.view.startSpinner();
       let gamma = document.getElementById('gamma-input');
       let usedLUT = [];
       this.model.result = this.transformer.gammaCorrection(this.model.original, gamma.value, usedLUT);
       
-      this.refreshView();
       this.view.closeInterfaces();
       this.view.updateTransformationChart('transformation-chart', usedLUT);
       this.view.clearInputValues(gamma);
+      this.refreshView();
     };
 
     // Difference of images.
@@ -264,23 +276,25 @@ class IpApp {
       document.getElementById('difference-threshold-label').textContent = 'Umbral: ' + threshold;
     };
     document.getElementById('difference-genDif-btn').onclick = () => {
+      this.view.startSpinner();
       let selectedId = document.getElementById('difference-selector').value;
       if (!selectedId) return;
       let selected = this.model.imageById(selectedId);
       this.model.result = this.transformer.generateDifferenceImage(this.model.original, selected);
       
-      this.refreshView();
       this.view.closeInterfaces();
+      this.refreshView();
     };
     document.getElementById('difference-genMap-btn').onclick = () => {
+      this.view.startSpinner();
       let selectedId = document.getElementById('difference-selector').value;
       if (!selectedId) return;
       let selected = this.model.imageById(selectedId);
       let threshold = document.getElementById('difference-threshold-range').value;
       this.model.result = this.transformer.generateDifferenceMap(this.model.original, selected, threshold, this.model.colorPicked);
       
-      this.refreshView();
       this.view.closeInterfaces();
+      this.refreshView();
     };
     this.view.setColorPicker('difference-colorpicker', 'red', (color) => {
       document.getElementById('difference-colorpicker').style.background = color.rgbaString;
@@ -333,6 +347,7 @@ class IpApp {
   }
 
   generateROI(first, second) {
+    this.view.startSpinner();
     let roiX = min(first.x, second.x);
     let roiY = min(first.y, second.y);
     let roiWidth = max(first.x, second.x) - min(first.x, second.x);

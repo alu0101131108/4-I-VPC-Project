@@ -68,6 +68,7 @@ class IpView {
         'Contraste: ' + originalImageData.parameters.contrast;
     this.infoElements.original.entropy.textContent = 
         'Entropía: ' + originalImageData.parameters.entropy;
+    document.getElementById('resImgInfo').style.display = 'none';
     if (resultImageData) {
       document.getElementById('resImgInfo').style.display = 'inline';
       this.infoElements.result.extension.textContent = 

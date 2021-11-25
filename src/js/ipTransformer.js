@@ -151,7 +151,6 @@ class IpTransformer {
       for (let value = 0; value < 256; value++) {
         let matchingValue;
         for (let selected = 0; selected < 256; selected++) {
-          // console.log(value, oldHistogram[value], selected, newHistogram[selected]);
           if (newHistogram[selected] >= oldHistogram[value]) {
             matchingValue = selected;
             break;
