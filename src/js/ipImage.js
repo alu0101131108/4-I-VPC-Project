@@ -10,6 +10,7 @@ class IpImage {
   colorRange;     // attrs: low, high.
   parameters;     // attrs: bright, contrast, entropy.
   ready;
+  currentRotation;
   
   constructor(value, filename) {
     // Path constructor, if no filename is specified it will look at last path directory.
@@ -53,6 +54,7 @@ class IpImage {
     }
 
     this.ready = false;
+    this.currentRotation = 0;
   }
 
   updateData() {
