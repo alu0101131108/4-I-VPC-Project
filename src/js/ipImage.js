@@ -189,9 +189,9 @@ class IpImage {
       console.log('Error at IpImage::getRowPixels() param out of range');
       return;
     }
-    let row = [];
-    let firstIndex = index * this.size.width * 4;
     this.p5Image.loadPixels();
+    let firstIndex = index * this.size.width * 4;
+    let row = [];
     for (let i = 0; i < this.size.width * 4; i++) {
       row.push(this.p5Image.pixels[firstIndex + i]);
     }
@@ -212,6 +212,36 @@ class IpImage {
       index = index + this.size.width;
     }
     return column;
+  }
+
+  setRowPixels(index, row) {
+    if (row.length !== this.size.width * 4 || index >= this.size.height) {
+      console.log('Error at IpImage::setRowPixels() invalid parameters');
+      return;
+    }
+
+    this.p5Image.loadPixels();
+    let firstIndex = index * this.size.width * 4;
+    for (let i = 0; i < this.size.width * 4; i++) {
+      this.p5Image.pixels[firstIndex + i] = row[i];
+    }
+    this.p5Image.updatePixels();
+  }
+
+  setColumnPixels(index, column) {
+    if (column.length !== this.size.height * 4 || index >= this.size.width) {
+      console.log('Error at IpImage::setColumnPixels() invalid parameters');
+      return;
+    }
+
+    this.p5Image.loadPixels();
+    for (let i = 0; i < this.size.height; i++) {
+      for (let j = 0; j < 4; j++) {
+        this.p5Image.pixels[index * 4 + j] = column[i * 4 + j];
+      }
+      index = index + this.size.width;
+    }
+    this.p5Image.updatePixels();
   }
 
 }
