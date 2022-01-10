@@ -155,6 +155,14 @@
             <button class = "col btn" id = "gamma-btn"> Corrección Gamma </button>
             <button class = "col btn ms-3" id = "difference-btn"> Diferencia</button>
           </div>
+          <div class = "row w-75 mt-3">
+            <button class = "col btn" id = "mirror-vert-btn"> Espejo Vertical</button>
+            <button class = "col btn mx-3" id = "mirror-hor-btn"> Espejo Horizontal</button>
+            <button class = "col btn" id = "trans-btn"> Traspuesta </button>
+            <button class = "col btn mx-3" id = "mult-rots-btn"> Rotaciones múltiplo </button>
+            <button class = "col btn" id = "scale-btn"> Escalado </button>
+            <button class = "col btn ms-3" id = "rotation-btn"> Rotación </button>
+          </div>
         </div>
         <div id = "interfaces">
           <div id = "lbs-interface" style="display: none;">
@@ -228,6 +236,49 @@
               <button id = "difference-genDif-btn" class = "btn"> Generar Imagen Diferencia</button>
               <button id = "difference-genMap-btn" class = "btn"> Generar Mapa de Cambios</button>
               <button id = "difference-colorpicker" class = "btn" style="background: red;">Color</button>
+            </div>
+          </div>
+          <div id = "scale-interface" class="col-md-8 offset-md-4 w-25" style="display: none; color: black;">
+            <div class = "row justify-content-md-center">
+              <div class = "input-group">
+                <div class="col form-floating mb-3">
+                  <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                  <label for="floatingInput">X: </label>
+                </div>
+                <div class="col form-floating mb-3">
+                  <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                  <label for="floatingInput">Y: </label>
+                </div>
+              </div>
+            </div>
+            <div class = "row justify-content-md-center">
+              <button class="col btn mt-3" id = "rotation-apply-btn">Escalar</button>
+            </div>
+          </div>
+          <div id = "rotation-interface" class="col-md-8 offset-md-4 w-25" style="display: none;">
+            <div class = "row justify-content-md-center">
+              <div class = "input-group">
+                <input class = "col input-group-text" type = "text" id = "rotation-input" placeholder="Ángulo de giro">
+                <div class="btn-group" role="group">
+                  <input type="radio" class="btn-check" name = "clockchoice" id = "clockwise-btn" checked>
+                  <label class="col btn btn-outline-primary" for = "clockwise-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                      <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                    </svg>
+                  </label>
+                  <input type="radio" class="btn-check" name = "clockchoice" id = "counter-clockwise-apply-btn">
+                  <label class="col btn btn-outline-primary" for = "counter-clockwise-apply-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
+                      <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
+                    </svg>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class = "row justify-content-md-center">
+              <button class="col btn mt-3" id = "rotation-apply-btn">Rotar</button>
             </div>
           </div>
         </div>
