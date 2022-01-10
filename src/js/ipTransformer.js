@@ -249,9 +249,37 @@ class IpTransformer {
     let resultImg = createImage(original.size.height, original.size.width);
     let result = new IpImage(resultImg, 'Traspuesta-'+ int(random(100)).toString() + '-' + original.id);
     result.updateData();
-    for (let row = 0; row < result.size.width; row++) {
+    for (let row = 0; row < result.size.height; row++) {
       result.setRowPixels(row, original.getColumnPixels(row));
     }
+    return result;
+  }
+
+  rotateMultipleOfNinety(original) {
+    let result;
+    switch (original.currentRotation % 3) {
+      case 0:
+        // The image is upright (0º) and needs a 90º rotation to the right.
+        result = this.generateTrasposed(original);
+        result = this.horizontalMirror(result);
+        break;
+      case 1:
+        // The image is 90º to the right and needs a 180º absolute rotation.
+        result = this.verticalMirror(original);
+        break;
+      case 2:
+        // The image is at 180º and needs to be at 270º.
+        result = this.generateTrasposed(original)
+        break;
+      case 3:
+        // The image is at 270º and needs to be upright (0º)
+        result = original;
+        break;
+      default:
+        console.log("Unexpected error.");
+        break;
+    }
+    original.currentRotation++;
     return result;
   }
 }
