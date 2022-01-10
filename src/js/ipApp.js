@@ -304,6 +304,14 @@ class IpApp {
         blue: color.rgba[2],
       };
     });
+    
+    document.getElementById('scale-btn').onclick = () => {
+      this.view.toggleInterface('scale-interface');
+    };
+
+    document.getElementById('rotation-btn').onclick = () => {
+      this.view.toggleInterface('rotation-interface');
+    };
   }
 
   updateImageButtons() {
