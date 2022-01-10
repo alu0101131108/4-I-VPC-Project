@@ -184,6 +184,36 @@ class IpImage {
     this.p5Image.updatePixels();
   }
 
+  getRowPixels(index) {
+    if (index >= this.size.height) {
+      console.log('Error at IpImage::getRowPixels() param out of range');
+      return;
+    }
+    let row = [];
+    let firstIndex = index * this.size.width * 4;
+    this.p5Image.loadPixels();
+    for (let i = 0; i < this.size.width * 4; i++) {
+      row.push(this.p5Image.pixels[firstIndex + i]);
+    }
+    return row;
+  }
+
+  getColumnPixels(index) {
+    if (index >= this.size.width) {
+      console.log('Error at IpImage::getColumnPixels() param out of range');
+      return;
+    }
+    let column = [];
+    this.p5Image.loadPixels();
+    for (let i = 0; i < this.size.height; i++) {
+      for (let j = 0; j < 4; j++) {
+        column.push(this.p5Image.pixels[index * 4 + j]);
+      }
+      index = index + this.size.width;
+    }
+    return column;
+  }
+
 }
     
 export {IpImage};

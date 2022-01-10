@@ -304,6 +304,24 @@ class IpApp {
         blue: color.rgba[2],
       };
     });
+  
+    // Vertical mirror.
+    document.getElementById('mirror-vert-btn').onclick = () => {
+      this.view.startSpinner();
+      this.model.result = this.transformer.verticalMirror(this.model.original);
+      
+      this.view.closeInterfaces();
+      this.refreshView();
+    };
+
+    // Horizontal mirror.
+    // document.getElementById('greyscale-hor-btn').onclick = () => {
+    //   this.view.startSpinner();
+    //   this.model.result = this.transformer.horizontalMirror(this.model.original);
+      
+    //   this.view.closeInterfaces();
+    //   this.refreshView();
+    // };
   }
 
   updateImageButtons() {
