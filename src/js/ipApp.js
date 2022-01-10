@@ -309,7 +309,6 @@ class IpApp {
     document.getElementById('mirror-vert-btn').onclick = () => {
       this.view.startSpinner();
       this.model.result = this.transformer.verticalMirror(this.model.original);
-      
       this.view.closeInterfaces();
       this.refreshView();
     };
@@ -318,7 +317,6 @@ class IpApp {
     document.getElementById('mirror-hor-btn').onclick = () => {
       this.view.startSpinner();
       this.model.result = this.transformer.horizontalMirror(this.model.original);
-      
       this.view.closeInterfaces();
       this.refreshView();
     };
@@ -327,6 +325,14 @@ class IpApp {
     document.getElementById('trans-btn').onclick = () => {
       this.view.startSpinner();
       this.model.result = this.transformer.generateTrasposed(this.model.original);
+      this.view.closeInterfaces();
+      this.refreshView();
+    };
+
+    // Rotate mult of 90 degrees image
+    document.getElementById('mult-rots-btn').onclick = () => {
+      this.view.startSpinner();
+      this.model.result = this.transformer.rotateMultipleOfNinety(this.model.original);
       this.view.closeInterfaces();
       this.refreshView();
     };
