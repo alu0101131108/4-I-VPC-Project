@@ -315,13 +315,13 @@ class IpApp {
     };
 
     // Horizontal mirror.
-    // document.getElementById('greyscale-hor-btn').onclick = () => {
-    //   this.view.startSpinner();
-    //   this.model.result = this.transformer.horizontalMirror(this.model.original);
+    document.getElementById('mirror-hor-btn').onclick = () => {
+      this.view.startSpinner();
+      this.model.result = this.transformer.horizontalMirror(this.model.original);
       
-    //   this.view.closeInterfaces();
-    //   this.refreshView();
-    // };
+      this.view.closeInterfaces();
+      this.refreshView();
+    };
 
 
     document.getElementById('scale-btn').onclick = () => {

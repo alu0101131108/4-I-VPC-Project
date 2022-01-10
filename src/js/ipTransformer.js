@@ -221,28 +221,36 @@ class IpTransformer {
 
   verticalMirror(original) {
     let p5Result = original.p5Image.get(); 
-    p5Result.loadPixels();
+    let result = new IpImage(p5Result, 'vertMirror-' + int(random(100)).toString() + '-' + original.id);
+    result.updateData();
 
-    let rowsToSwap = floor(original.size.height / 2);
+    let rowsToSwap = floor(result.size.height / 2);
     for (let i = 0; i < rowsToSwap; i++) {
-      let tempRow = [];
-      for (let j = 0; j < original.size.width; j++) {
-        let index = (i * original.size.width + j) * 4;
-        for (let k = 0; k < 4; k++) {
-          tempRow.push(p5Result);
-        }
-      }
+      let oppositeIndex = result.size.height - 1 - i;
+      let row = result.getRowPixels(i);
+      let oppositeRow = result.getRowPixels(oppositeIndex);
+      result.setRowPixels(i, oppositeRow);
+      result.setRowPixels(oppositeIndex, row);
     }
 
-    for (let i = 0; i < p5Result.pixels.length; i = i + 4) {
-      p5Result.pixels[i] = ntscGreyValue;
-      p5Result.pixels[i + 1] = ntscGreyValue;
-      p5Result.pixels[i + 2] = ntscGreyValue;
+    return result;
+  }
+
+  horizontalMirror(original) {
+    let p5Result = original.p5Image.get(); 
+    let result = new IpImage(p5Result, 'horMirror-' + int(random(100)).toString() + '-' + original.id);
+    result.updateData();
+
+    let colsToSwap = floor(result.size.width / 2);
+    for (let i = 0; i < colsToSwap; i++) {
+      let oppositeIndex = result.size.width - 1 - i;
+      let col = result.getColumnPixels(i);
+      let oppositeColumn = result.getColumnPixels(oppositeIndex);
+      result.setColumnPixels(i, oppositeColumn);
+      result.setColumnPixels(oppositeIndex, col);
     }
 
-    p5Result.updatePixels();
-
-    return new IpImage(p5Result, 'vertMirror-' + int(random(100)).toString() + '-' + original.id);
+    return result;
   }
 }
 
