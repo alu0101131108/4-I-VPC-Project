@@ -323,11 +323,20 @@ class IpApp {
     //   this.refreshView();
     // };
 
+    // Trasposed image
+    document.getElementById('trans-btn').onclick = () => {
+      this.view.startSpinner();
+      this.model.result = this.transformer.generateTrasposed(this.model.original);
+      this.view.closeInterfaces();
+      this.refreshView();
+    };
 
+    // Scale image
     document.getElementById('scale-btn').onclick = () => {
       this.view.toggleInterface('scale-interface');
     };
 
+    // Rotate image
     document.getElementById('rotation-btn').onclick = () => {
       this.view.toggleInterface('rotation-interface');
     };

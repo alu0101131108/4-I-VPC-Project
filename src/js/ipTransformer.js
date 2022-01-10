@@ -244,6 +244,16 @@ class IpTransformer {
 
     return new IpImage(p5Result, 'vertMirror-' + int(random(100)).toString() + '-' + original.id);
   }
+
+  generateTrasposed(original) {
+    let resultImg = createImage(original.size.height, original.size.width);
+    let result = new IpImage(resultImg, 'Traspuesta-'+ int(random(100)).toString() + '-' + original.id);
+    result.updateData();
+    for (let row = 0; row < result.size.width; row++) {
+      result.setRowPixels(row, original.getColumnPixels(row));
+    }
+    return result;
+  }
 }
 
 export {IpTransformer};
