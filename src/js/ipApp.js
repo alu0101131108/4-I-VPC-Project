@@ -18,6 +18,7 @@ class IpApp {
   }
   
   setup() {
+    angleMode(DEGREES);
     this.setupMenuButtons();
     this.setupOperationButtons();
     this.loadDefaultImages();
@@ -345,6 +346,28 @@ class IpApp {
     // Rotate image
     document.getElementById('rotation-btn').onclick = () => {
       this.view.toggleInterface('rotation-interface');
+    };
+    document.getElementById('clockwise-btn').onclick = () => {
+      let angle = document.getElementById('rotation-input');
+      if (!angle.value) return;
+
+      this.view.startSpinner();
+      this.model.result = this.transformer.rotate(this.model.original, angle.value, true, 'bilineal');
+
+      this.view.closeInterfaces();
+      this.view.clearInputValues(angle);
+      this.refreshView();
+    };
+    document.getElementById('counter-clockwise-apply-btn').onclick = () => {
+      let angle = document.getElementById('rotation-input');
+      if (!angle.value) return;
+
+      this.view.startSpinner();
+      this.model.result = this.transformer.rotate(this.model.original, angle.value, false, 'bilineal');
+      
+      this.view.closeInterfaces();
+      this.view.clearInputValues(angle);
+      this.refreshView()
     };
   }
 

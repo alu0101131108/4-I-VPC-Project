@@ -225,6 +225,7 @@ class IpTransformer {
     result.updateData();
 
     let rowsToSwap = floor(result.size.height / 2);
+    result.p5Image.loadPixels();
     for (let i = 0; i < rowsToSwap; i++) {
       let oppositeIndex = result.size.height - 1 - i;
       let row = result.getRowPixels(i);
@@ -232,6 +233,7 @@ class IpTransformer {
       result.setRowPixels(i, oppositeRow);
       result.setRowPixels(oppositeIndex, row);
     }
+    result.p5Image.updatePixels();
 
     return result;
   }
@@ -242,6 +244,7 @@ class IpTransformer {
     result.updateData();
 
     let colsToSwap = floor(result.size.width / 2);
+    result.p5Image.loadPixels();
     for (let i = 0; i < colsToSwap; i++) {
       let oppositeIndex = result.size.width - 1 - i;
       let col = result.getColumnPixels(i);
@@ -249,6 +252,7 @@ class IpTransformer {
       result.setColumnPixels(i, oppositeColumn);
       result.setColumnPixels(oppositeIndex, col);
     }
+    result.p5Image.updatePixels();
 
     return result;
   }
@@ -257,9 +261,11 @@ class IpTransformer {
     let resultImg = createImage(original.size.height, original.size.width);
     let result = new IpImage(resultImg, 'Traspuesta-'+ int(random(100)).toString() + '-' + original.id);
     result.updateData();
+    original.p5Image.loadPixels();
     for (let row = 0; row < result.size.height; row++) {
       result.setRowPixels(row, original.getColumnPixels(row));
     }
+    result.p5Image.updatePixels();
     return result;
   }
 
@@ -289,6 +295,161 @@ class IpTransformer {
     }
     original.currentRotation++;
     return result;
+  }
+
+  add(colorA, colorB) {
+    return {
+      r: colorA.r + colorB.r,
+      g: colorA.g + colorB.g,
+      b: colorA.b + colorB.b,
+      a: colorA.a + colorB.a
+    };
+  }
+
+  sub(colorA, colorB) {
+    return {
+      r: colorA.r - colorB.r,
+      g: colorA.g - colorB.g,
+      b: colorA.b - colorB.b,
+      a: colorA.a - colorB.a
+    };
+  }
+
+  mult(float, color) {
+    return {
+      r: color.r * float,
+      g: color.g * float,
+      b: color.b * float,
+      a: color.a * float
+    };
+  }
+
+  interpolation(mode, point, original, background) {
+    // In case point is out of original image.
+    if (point.x < 0 || point.x >= original.size.width ||
+        point.y < 0 || point.y >= original.size.height) {
+      return background;
+    }
+    // Nearest neighbour interpolation.
+    if (mode === 'vmp') {
+      let i = round(point.x);
+      let j = round(point.y);
+      let index = (i * original.size.width + j) * 4;
+      return {
+        r: original.p5Image.pixels[index],
+        g: original.p5Image.pixels[index + 1],
+        b: original.p5Image.pixels[index + 2],
+        a: original.p5Image.pixels[index + 3]
+      };
+    }
+    // Bilineal interpolation.
+    else if (mode === 'bilineal') {
+      let points = {
+        A: {x: floor(point.x), y: ceil(point.y)},
+        B: {x: ceil(point.x), y: ceil(point.y)},
+        C: {x: floor(point.x), y: floor(point.y)},
+        D: {x: ceil(point.x), y: floor(point.y)}
+      }
+      let colors = {
+        A: original.getColor(points.A),
+        B: original.getColor(points.B),
+        C: original.getColor(points.C),
+        D: original.getColor(points.D)
+      }
+
+      let p = point.x - floor(point.x);
+      let q = 1 - (point.y - floor(point.y));
+      // Q = A + (B - A) * p.
+      let Q = this.add(colors.A, this.mult(p, this.sub(colors.B, colors.A)));
+      // R = C + (D - C) * p.
+      let R = this.add(colors.C, this.mult(p, this.sub(colors.D, colors.C)));
+      // P = R + (Q - R) * q.
+      let P = this.add(R, this.mult(q, this.sub(Q, R)));
+
+      return P;
+    }
+    // Invalid mode.
+    else {
+      console.log('Error in ipTransformer::interpolation() invalid mode');
+    }
+  }
+
+  rotate(original, angle, clockwise, interpolation, background) {
+    // Parameter validation and angle adjustment.
+    angle = parseInt(angle);
+    if (!background) background = {r: 0, g: 0, b: 0, a: 0};
+    if (clockwise) angle *= -1;
+
+    // Original corners.
+    let oCor = {
+      tl: {x: 0, y: 0},
+      tr: {x: original.size.width - 1, y: 0},
+      bl: {x: 0, y: original.size.height - 1},
+      br: {x: original.size.width - 1, y: original.size.height - 1},
+    };
+
+    // Rotation to map from original coordinates to result cordinates.
+    let cosAngle = cos(angle);
+    let sinAngle = sin(angle);
+    const rotPoint = (point) => {
+      let rotated = {
+        x: cosAngle * point.x - sinAngle * point.y,
+        y: sinAngle * point.x + cosAngle * point.y
+      };
+      return rotated;
+    }
+
+    // Rotated corners.
+    let rotCor = {
+      tl: rotPoint(oCor.tl, angle),
+      tr: rotPoint(oCor.tr, angle),
+      bl: rotPoint(oCor.bl, angle),
+      br: rotPoint(oCor.br, angle),
+    }
+
+    // Result image min and max coordinates.
+    let rMinX = min([rotCor.tl.x, rotCor.tr.x, rotCor.bl.x, rotCor.br.x]);
+    let rMinY = min([rotCor.tl.y, rotCor.tr.y, rotCor.bl.y, rotCor.br.y]);
+    let rMaxX = max([rotCor.tl.x, rotCor.tr.x, rotCor.bl.x, rotCor.br.x]);
+    let rMaxY = max([rotCor.tl.y, rotCor.tr.y, rotCor.bl.y, rotCor.br.y]);
+
+    // Size of the resulting image (paralelogram) where rotated original image will fit.
+    let rWidth = ceil(rMaxX - rMinX);
+    let rHeight = ceil(rMaxY - rMinY);
+
+    // Transformation form result indexes to result axis coordinates.
+    const rToOriginal = (i, j) => {
+      return {x: i + rMinX, y: j + rMinY};
+    };
+
+    // Inverse rotation to map from result coordinates to original cordinates.
+    let iCosAngle = cos(-angle);
+    let iSinAngle = sin(-angle);
+    const iRotPoint = (point) => {
+      let rotated = {
+        x: iCosAngle * point.x - iSinAngle * point.y,
+        y: iSinAngle * point.x + iCosAngle * point.y
+      };
+      return rotated;
+    };
+
+    // Interpolation of pixel values from result to original.
+    let p5Result = createImage(rWidth, rHeight);
+    p5Result.loadPixels();
+    for (let i = 0; i < rWidth; i++) {
+      for (let j = 0; j < rHeight; j++) {
+        let coord = rToOriginal(i, j);
+        let unmappedCoord = iRotPoint(coord);
+        let color = this.interpolation(interpolation, unmappedCoord, original, background);
+        let index = (i * rWidth + j) * 4;
+        p5Result.pixels[index] = color.r;
+        p5Result.pixels[index + 1] = color.g;
+        p5Result.pixels[index + 2] = color.b;
+        p5Result.pixels[index + 3] = color.a;
+      }
+    }
+    p5Result.updatePixels();
+    return new IpImage(p5Result, angle.toString() + 'º-Rotacion-'+ int(random(100)).toString() + '-' + original.id);
   }
 }
 
