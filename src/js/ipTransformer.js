@@ -326,15 +326,15 @@ class IpTransformer {
 
   interpolation(mode, point, original, background) {
     // In case point is out of original image.
-    if (point.x < 0 || point.x >= original.size.width ||
-        point.y < 0 || point.y >= original.size.height) {
+    if (point.x < 0 || point.x > original.size.width - 1 ||
+        point.y < 0 || point.y > original.size.height - 1) {
       return background;
     }
     // Nearest neighbour interpolation.
     if (mode === 'vmp') {
       let i = round(point.x);
       let j = round(point.y);
-      let index = (i * original.size.width + j) * 4;
+      let index = (j * original.size.width + i) * 4;
       return {
         r: original.p5Image.pixels[index],
         g: original.p5Image.pixels[index + 1],
@@ -377,8 +377,8 @@ class IpTransformer {
   rotate(original, angle, clockwise, interpolation, background) {
     // Parameter validation and angle adjustment.
     angle = parseInt(angle);
-    if (!background) background = {r: 0, g: 0, b: 0, a: 0};
-    if (clockwise) angle *= -1;
+    if (!background) background = {r: 0, g: 0, b: 0, a: 255};
+    if (!clockwise) angle *= -1;
 
     // Original corners.
     let oCor = {
@@ -401,10 +401,10 @@ class IpTransformer {
 
     // Rotated corners.
     let rotCor = {
-      tl: rotPoint(oCor.tl, angle),
-      tr: rotPoint(oCor.tr, angle),
-      bl: rotPoint(oCor.bl, angle),
-      br: rotPoint(oCor.br, angle),
+      tl: rotPoint(oCor.tl),
+      tr: rotPoint(oCor.tr),
+      bl: rotPoint(oCor.bl),
+      br: rotPoint(oCor.br),
     }
 
     // Result image min and max coordinates.
@@ -417,7 +417,7 @@ class IpTransformer {
     let rWidth = ceil(rMaxX - rMinX);
     let rHeight = ceil(rMaxY - rMinY);
 
-    // Transformation form result indexes to result axis coordinates.
+    // Transformation from result indexes to result axis coordinates.
     const rToOriginal = (i, j) => {
       return {x: i + rMinX, y: j + rMinY};
     };
@@ -439,9 +439,9 @@ class IpTransformer {
     for (let i = 0; i < rWidth; i++) {
       for (let j = 0; j < rHeight; j++) {
         let coord = rToOriginal(i, j);
-        let unmappedCoord = iRotPoint(coord);
-        let color = this.interpolation(interpolation, unmappedCoord, original, background);
-        let index = (i * rWidth + j) * 4;
+        let iMappedCoord = iRotPoint(coord);
+        let color = this.interpolation(interpolation, iMappedCoord, original, background);
+        let index = (j * rWidth + i) * 4;
         p5Result.pixels[index] = color.r;
         p5Result.pixels[index + 1] = color.g;
         p5Result.pixels[index + 2] = color.b;

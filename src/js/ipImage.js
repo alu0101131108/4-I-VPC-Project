@@ -204,7 +204,7 @@ class IpImage {
       console.log('Error at IpImage::getRowPixels() param out of range');
       return;
     }
-    // this.p5Image.loadPixels();
+    
     let firstIndex = index * this.size.width * 4;
     let row = [];
     for (let i = 0; i < this.size.width * 4; i++) {
@@ -219,7 +219,7 @@ class IpImage {
       return;
     }
     let column = [];
-    // this.p5Image.loadPixels();
+    
     for (let i = 0; i < this.size.height; i++) {
       for (let j = 0; j < 4; j++) {
         column.push(this.p5Image.pixels[index * 4 + j]);
@@ -235,12 +235,10 @@ class IpImage {
       return;
     }
 
-    // this.p5Image.loadPixels();
     let firstIndex = index * this.size.width * 4;
     for (let i = 0; i < this.size.width * 4; i++) {
       this.p5Image.pixels[firstIndex + i] = row[i];
     }
-    // this.p5Image.updatePixels();
   }
 
   setColumnPixels(index, column) {
@@ -249,25 +247,28 @@ class IpImage {
       return;
     }
 
-    // this.p5Image.loadPixels();
     for (let i = 0; i < this.size.height; i++) {
       for (let j = 0; j < 4; j++) {
         this.p5Image.pixels[index * 4 + j] = column[i * 4 + j];
       }
       index = index + this.size.width;
     }
-    // this.p5Image.updatePixels();
   }
 
   // Returns object with color components RGBA for the specified point. 
   getColor(point) {
-    let index = (point.x * this.size.width + point.y) * 4;
+    if (point.x < 0 || point.x >= this.size.width ||
+        point.y < 0 || point.y >= this.size.height) {
+      console.log(point.x, point.y);
+    }
+
+    let index = (point.y * this.size.width + point.x) * 4;
     return { 
       r: this.p5Image.pixels[index],
       g: this.p5Image.pixels[index + 1],
       b: this.p5Image.pixels[index + 2],
       a: this.p5Image.pixels[index + 3],
-    }
+    };
   }
 }
     

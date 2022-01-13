@@ -363,7 +363,7 @@ class IpApp {
       if (!angle.value) return;
 
       this.view.startSpinner();
-      this.model.result = this.transformer.rotate(this.model.original, angle.value, false, 'bilineal');
+      this.model.result = this.transformer.rotate(this.model.original, angle.value, false, 'vmp');
       
       this.view.closeInterfaces();
       this.view.clearInputValues(angle);
