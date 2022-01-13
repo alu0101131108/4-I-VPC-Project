@@ -11,8 +11,9 @@ class IpImage {
   parameters;     // attrs: bright, contrast, entropy.
   ready;
   currentRotation;
+  backgroundColor;  // This color will not be counted in the histogram.
   
-  constructor(value, filename) {
+  constructor(value, filename, backgroundColor) {
     // Path constructor, if no filename is specified it will look at last path directory.
     if (typeof(value) === 'string') {
       this.p5Image = loadImage(value);
@@ -55,6 +56,7 @@ class IpImage {
 
     this.ready = false;
     this.currentRotation = 0;
+    this.backgroundColor = backgroundColor;
   }
 
   updateData() {
@@ -73,12 +75,22 @@ class IpImage {
   }
 
   updateHistogramData() {
+    let backgroundPixelsCount = 0;
+
     // Calculate non normalized, normal histogram data.
     this.p5Image.loadPixels();
     for (let i = 0; i < this.p5Image.pixels.length; i = i + 4) {
       let r = this.p5Image.pixels[i];
       let g = this.p5Image.pixels[i + 1];
       let b = this.p5Image.pixels[i + 2];
+
+      // Background check.
+      if (this.backgroundColor && this.backgroundColor.r === r &&
+          this.backgroundColor.g === g && this.backgroundColor.b === b) {
+        backgroundPixelsCount++;
+        continue;
+      }
+
       let grey = round(0.299 * r + 0.587 * g + 0.114 * b);  // NTSC
       this.greyPixels.push(grey);
       this.histogramData.normal.red[r]++;
@@ -87,7 +99,7 @@ class IpImage {
       this.histogramData.normal.grey[grey]++;
     }
     // Normalize data and calculate the accumulated histogram data.
-    const TOTAL_PIXELS = this.size.width * this.size.height;
+    const TOTAL_PIXELS = this.size.width * this.size.height - backgroundPixelsCount;
     for (let i = 0; i < 256; i++) {
       this.histogramData.normal.red[i] = 
           this.histogramData.normal.red[i] / TOTAL_PIXELS, 4;

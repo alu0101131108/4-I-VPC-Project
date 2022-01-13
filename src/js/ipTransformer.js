@@ -449,7 +449,7 @@ class IpTransformer {
       }
     }
     p5Result.updatePixels();
-    return new IpImage(p5Result, angle.toString() + 'º-Rotacion-'+ int(random(100)).toString() + '-' + original.id);
+    return new IpImage(p5Result, angle.toString() + 'º-Rotacion-'+ int(random(100)).toString() + '-' + original.id, background);
   }
 }
 
