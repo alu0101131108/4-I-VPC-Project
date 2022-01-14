@@ -271,7 +271,7 @@ class IpTransformer {
 
   rotateMultipleOfNinety(original) {
     let result;
-    switch (original.currentRotation % 3) {
+    switch (original.currentRotation % 4) {
       case 0:
         // The image is upright (0º) and needs a 90º rotation to the right.
         result = this.generateTrasposed(original);
