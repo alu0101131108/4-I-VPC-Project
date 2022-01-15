@@ -341,7 +341,52 @@ class IpApp {
     // Scale image
     document.getElementById('scale-btn').onclick = () => {
       this.view.toggleInterface('scale-interface');
+      document.getElementById('x-scale-label').innerHTML = 'X: ' + this.model.original.size.width
+      document.getElementById('y-scale-label').innerHTML = 'Y: ' + this.model.original.size.height
     };
+    document.getElementById('scale-apply-btn').onclick = () => {
+      let xScaleInput = document.getElementById('x-scale-input');
+      let yScaleInput = document.getElementById('y-scale-input');
+      let xScale = xScaleInput.value;
+      let yScale = yScaleInput.value;
+      let scaleMode, interpolationMode;
+
+      document.getElementById('scale-error').style.display = 'none';
+
+      if (!xScaleInput.value && !yScaleInput.value)
+        return;
+      if (!xScaleInput.value)
+        xScale = this.model.original.size.width
+      if (!yScaleInput.value)
+        yScale = this.model.original.size.height
+
+      if (document.getElementById('scale-dims').checked) {
+        scaleMode = 'dims';
+        if (xScale <= 0 || yScale <= 0) {
+          document.getElementById('scale-error').style.display = 'block';
+          return;
+        }
+      } else {
+        scaleMode = 'percent';
+        if (xScale <= -100 || yScale <= -100) {
+          document.getElementById('scale-error').style.display = 'block';
+          return;
+        }
+      }
+
+      if (document.getElementById('scale-bilinear').checked)
+        interpolationMode = 'bilinear';
+      else
+        interpolationMode = 'vmp';
+
+      this.view.startSpinner();
+      this.model.result = this.transformer.scale(this.model.original, xScale, yScale, scaleMode, interpolationMode);
+
+      this.view.closeInterfaces();
+      this.view.clearInputValues(xScaleInput);
+      this.view.clearInputValues(yScaleInput);
+      this.refreshView();
+    }
 
     // Rotate image
     document.getElementById('rotation-btn').onclick = () => {
@@ -350,9 +395,15 @@ class IpApp {
     document.getElementById('clockwise-btn').onclick = () => {
       let angle = document.getElementById('rotation-input');
       if (!angle.value) return;
+      
+      let interpolationMode;
+      if (document.getElementById('rotation-bilinear').checked)
+        interpolationMode = 'bilinear';
+      else
+        interpolationMode = 'vmp';
 
       this.view.startSpinner();
-      this.model.result = this.transformer.rotate(this.model.original, angle.value, true, 'bilineal');
+      this.model.result = this.transformer.rotate(this.model.original, angle.value, true, interpolationMode);
 
       this.view.closeInterfaces();
       this.view.clearInputValues(angle);
@@ -362,8 +413,14 @@ class IpApp {
       let angle = document.getElementById('rotation-input');
       if (!angle.value) return;
 
+      let interpolationMode;
+      if (document.getElementById('rotation-bilinear').checked)
+        interpolationMode = 'bilinear';
+      else
+        interpolationMode = 'vmp';
+
       this.view.startSpinner();
-      this.model.result = this.transformer.rotate(this.model.original, angle.value, false, 'vmp');
+      this.model.result = this.transformer.rotate(this.model.original, angle.value, false, interpolationMode);
       
       this.view.closeInterfaces();
       this.view.clearInputValues(angle);

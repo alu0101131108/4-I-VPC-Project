@@ -342,8 +342,8 @@ class IpTransformer {
         a: original.p5Image.pixels[index + 3]
       };
     }
-    // Bilineal interpolation.
-    else if (mode === 'bilineal') {
+    // Bilinear interpolation.
+    else if (mode === 'bilinear') {
       let points = {
         A: {x: floor(point.x), y: ceil(point.y)},
         B: {x: ceil(point.x), y: ceil(point.y)},
@@ -370,8 +370,43 @@ class IpTransformer {
     }
     // Invalid mode.
     else {
-      console.log('Error in ipTransformer::interpolation() invalid mode');
+      console.log('Error in ipTransformer::interpolation() invalid mode.');
     }
+  }
+
+  scale(original, xScale, yScale, scaleMode, interpolation) {
+    let rHeight, rWidth;
+    if (scaleMode === 'dims') {
+      rHeight = parseInt(yScale);
+      rWidth = parseInt(xScale);
+    } else if (scaleMode === 'percent') {
+      rHeight = original.size.height + (original.size.height * (parseInt(yScale) / 100));
+      rWidth = original.size.width + (original.size.width * (parseInt(xScale) / 100));
+    } else {
+      console.log('Error in ipTransformer::scale() invalid scale mode.');
+    }
+    rHeight = round(rHeight);
+    rWidth = round(rWidth);
+
+    const rToOriginal = (i, j) => {
+      return {x: map(i, 0, rWidth - 1, 0, original.size.width - 1), y: map(j, 0, rHeight - 1, 0, original.size.height - 1)};
+    };
+
+    let p5Result = createImage(rWidth, rHeight);
+    let background = {r: 0, g: 0, b: 0, a: 255};
+    p5Result.loadPixels();
+    for (let i = 0; i < rWidth; i++) {
+      for (let j = 0; j < rHeight; j++) {
+        let color = this.interpolation(interpolation, rToOriginal(i, j), original, background);
+        let index = (j * rWidth + i) * 4;
+        p5Result.pixels[index] = color.r;
+        p5Result.pixels[index + 1] = color.g;
+        p5Result.pixels[index + 2] = color.b;
+        p5Result.pixels[index + 3] = color.a;
+      }
+    }
+    p5Result.updatePixels();
+    return new IpImage(p5Result, 'Escalado-'+ int(random(100)).toString() + '-' + original.id, background);
   }
 
   rotate(original, angle, clockwise, interpolation, background) {

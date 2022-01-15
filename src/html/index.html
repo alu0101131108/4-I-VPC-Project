@@ -240,22 +240,50 @@
           </div>
           <div id = "scale-interface" class="col-md-8 offset-md-4 w-25" style="display: none; color: black;">
             <div class = "row justify-content-md-center">
+              <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" name="radio-inter-scale" id="scale-bilinear" checked>
+                <label class="btn btn-outline-primary" for="scale-bilinear">Interpolación Bilineal</label>
+              
+                <input type="radio" class="btn-check" name="radio-inter-scale" id="scale-vmp">
+                <label class="btn btn-outline-primary" for="scale-vmp">Interpolación por vecino más próximo</label>
+              </div>
+            </div>
+            <div class = "row justify-content-md-center">
               <div class = "input-group">
-                <div class="col form-floating mb-3">
-                  <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                  <label for="floatingInput">X: </label>
+                <div class="col form-floating mb-3 mt-4">
+                  <input class="form-control" id="x-scale-input" placeholder="X">
+                  <label for="x-scale-input" id="x-scale-label">X: </label>
                 </div>
-                <div class="col form-floating mb-3">
-                  <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                  <label for="floatingInput">Y: </label>
+                <div class="col form-floating mb-3 mt-4 me-5">
+                  <input class="form-control" id="y-scale-input" placeholder="Y">
+                  <label for="y-scale-input" id="y-scale-label">Y: </label>
+                </div>
+                <div class = "btn-group-vertical my-3">
+                  <input type="radio" class="btn-check" name="radio-scale-mode" id="scale-dims" checked>
+                  <label class="btn btn-outline-primary" for="scale-dims">Dims</label>
+                
+                  <input type="radio" class="btn-check" name="radio-scale-mode" id="scale-percent">
+                  <label class="btn btn-outline-primary" for="scale-percent">%</label>
                 </div>
               </div>
             </div>
             <div class = "row justify-content-md-center">
-              <button class="col btn mt-3" id = "rotation-apply-btn">Escalar</button>
+              <button class="col btn" id = "scale-apply-btn">Escalar</button>
+            </div>
+            <div class="alert alert-danger mt-3 text-center" id = "scale-error" role="alert" style = "display: none;">
+              ¡Parámetros de entrada inválidos!
             </div>
           </div>
           <div id = "rotation-interface" class="col-md-8 offset-md-4 w-25" style="display: none;">
+            <div class = "row justify-content-md-center mb-4">
+              <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" name="radio-inter-rot" id="rotation-bilinear" checked>
+                <label class="btn btn-outline-primary" for="rotation-bilinear">Interpolación Bilineal</label>
+              
+                <input type="radio" class="btn-check" name="radio-inter-rot" id="rotation-vmp">
+                <label class="btn btn-outline-primary" for="rotation-vmp">Interpolación por vecino más próximo</label>
+              </div>
+            </div>
             <div class = "row justify-content-md-center">
               <div class = "input-group">
                 <input class = "col input-group-text" type = "text" id = "rotation-input" placeholder="Ángulo de giro">
