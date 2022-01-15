@@ -406,7 +406,7 @@ class IpTransformer {
       }
     }
     p5Result.updatePixels();
-    return new IpImage(p5Result, 'Escalado-'+ int(random(100)).toString() + '-' + original.id, background);
+    return new IpImage(p5Result, 'Escalado-'+ interpolation + "-" + int(random(100)).toString() + '-' + original.id, background);
   }
 
   rotate(original, angle, clockwise, interpolation, background) {
