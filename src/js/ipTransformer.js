@@ -357,8 +357,10 @@ class IpTransformer {
         D: original.getColor(points.D)
       }
 
+      // let q = 1- (point.y - floor(point.y)); ?????????????
       let p = point.x - floor(point.x);
-      let q = 1 - (point.y - floor(point.y));
+      let q = point.y - floor(point.y);
+
       // Q = A + (B - A) * p.
       let Q = this.add(colors.A, this.mult(p, this.sub(colors.B, colors.A)));
       // R = C + (D - C) * p.
@@ -388,7 +390,7 @@ class IpTransformer {
     rHeight = round(rHeight);
     rWidth = round(rWidth);
 
-    const rToOriginal = (i, j) => {
+    const rCoordToIndex = (i, j) => {
       return {x: map(i, 0, rWidth - 1, 0, original.size.width - 1), y: map(j, 0, rHeight - 1, 0, original.size.height - 1)};
     };
 
@@ -397,7 +399,7 @@ class IpTransformer {
     p5Result.loadPixels();
     for (let i = 0; i < rWidth; i++) {
       for (let j = 0; j < rHeight; j++) {
-        let color = this.interpolation(interpolation, rToOriginal(i, j), original, background);
+        let color = this.interpolation(interpolation, rCoordToIndex(i, j), original, background);
         let index = (j * rWidth + i) * 4;
         p5Result.pixels[index] = color.r;
         p5Result.pixels[index + 1] = color.g;
@@ -407,6 +409,75 @@ class IpTransformer {
     }
     p5Result.updatePixels();
     return new IpImage(p5Result, 'Escalado-'+ interpolation + "-" + int(random(100)).toString() + '-' + original.id, background);
+  }
+
+  directRotate(original, angle, clockwise, background) {
+    // Parameter validation and angle adjustment.
+    angle = parseInt(angle);
+    if (!background) background = {r: 0, g: 0, b: 0, a: 255};
+    if (!clockwise) angle *= -1;
+
+    // Original corners.
+    let oCor = {
+      tl: {x: 0, y: 0},
+      tr: {x: original.size.width - 1, y: 0},
+      bl: {x: 0, y: original.size.height - 1},
+      br: {x: original.size.width - 1, y: original.size.height - 1},
+    };
+
+    // Rotation to map from original coordinates to result cordinates.
+    let cosAngle = cos(angle);
+    let sinAngle = sin(angle);
+    const rotPoint = (point) => {
+      let rotated = {
+        x: cosAngle * point.x - sinAngle * point.y,
+        y: sinAngle * point.x + cosAngle * point.y
+      };
+      return rotated;
+    }
+
+    // Rotated corners.
+    let rotCor = {
+      tl: rotPoint(oCor.tl),
+      tr: rotPoint(oCor.tr),
+      bl: rotPoint(oCor.bl),
+      br: rotPoint(oCor.br),
+    }
+
+    // Result image min and max coordinates.
+    let rMinX = min([rotCor.tl.x, rotCor.tr.x, rotCor.bl.x, rotCor.br.x]);
+    let rMinY = min([rotCor.tl.y, rotCor.tr.y, rotCor.bl.y, rotCor.br.y]);
+    let rMaxX = max([rotCor.tl.x, rotCor.tr.x, rotCor.bl.x, rotCor.br.x]);
+    let rMaxY = max([rotCor.tl.y, rotCor.tr.y, rotCor.bl.y, rotCor.br.y]);
+
+    // Size of the resulting image (paralelogram) where rotated original image will fit.
+    let rWidth = ceil(rMaxX - rMinX);
+    let rHeight = ceil(rMaxY - rMinY);
+
+    // Transformation from result indexes to result axis coordinates.
+    const rCoordToIndex = (i, j) => {
+      return {x: i - floor(rMinX), y: j - ceil(rMinY)};
+    };
+
+    // Fill the result image with mapped colors from original.
+    let result = new IpImage(createImage(rWidth, rHeight), angle.toString() + 'º-Pintar&Rotar-'+ int(random(100)).toString() + '-' + original.id, background)
+    result.p5Image.loadPixels();
+    original.p5Image.loadPixels();
+    for (let i = 0; i < original.p5Image.width; i++) {
+      for (let j = 0; j < original.p5Image.height; j++) {
+        let originalPoint = {x: i, y: j}
+        let color = original.getColor(originalPoint);
+        let rotated = rotPoint(originalPoint);
+        rotated = {
+          x: floor(rotated.x),
+          y: floor(rotated.y)
+        }
+        let rotatedIndexes = rCoordToIndex(rotated.x, rotated.y);
+        result.setColor(rotatedIndexes, color);
+      }
+    }
+    result.p5Image.updatePixels();
+    return result;
   }
 
   rotate(original, angle, clockwise, interpolation, background) {
@@ -453,7 +524,7 @@ class IpTransformer {
     let rHeight = ceil(rMaxY - rMinY);
 
     // Transformation from result indexes to result axis coordinates.
-    const rToOriginal = (i, j) => {
+    const rIndexToCoor = (i, j) => {
       return {x: i + rMinX, y: j + rMinY};
     };
 
@@ -469,22 +540,18 @@ class IpTransformer {
     };
 
     // Interpolation of pixel values from result to original.
-    let p5Result = createImage(rWidth, rHeight);
-    p5Result.loadPixels();
+    let result = new IpImage(createImage(rWidth, rHeight), angle.toString() + 'º-Rotacion-'+ int(random(100)).toString() + '-' + original.id, background);
+    result.p5Image.loadPixels();
     for (let i = 0; i < rWidth; i++) {
       for (let j = 0; j < rHeight; j++) {
-        let coord = rToOriginal(i, j);
+        let coord = rIndexToCoor(i, j);
         let iMappedCoord = iRotPoint(coord);
         let color = this.interpolation(interpolation, iMappedCoord, original, background);
-        let index = (j * rWidth + i) * 4;
-        p5Result.pixels[index] = color.r;
-        p5Result.pixels[index + 1] = color.g;
-        p5Result.pixels[index + 2] = color.b;
-        p5Result.pixels[index + 3] = color.a;
+        result.setColor({x: i, y: j}, color);
       }
     }
-    p5Result.updatePixels();
-    return new IpImage(p5Result, angle.toString() + 'º-Rotacion-'+ int(random(100)).toString() + '-' + original.id, background);
+    result.p5Image.updatePixels();
+    return 
   }
 }
 

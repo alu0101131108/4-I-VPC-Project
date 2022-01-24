@@ -388,6 +388,33 @@ class IpApp {
       this.refreshView();
     }
 
+    // Direct rotate image
+    document.getElementById('direct-rotation-btn').onclick = () => {
+      this.view.toggleInterface('direct-rotation-interface');
+    };
+    document.getElementById('direct-clockwise-btn').onclick = () => {
+      let angle = document.getElementById('direct-rotation-input');
+      if (!angle.value) return;
+
+      this.view.startSpinner();
+      this.model.result = this.transformer.directRotate(this.model.original, angle.value, true);
+
+      this.view.closeInterfaces();
+      this.view.clearInputValues(angle);
+      this.refreshView();
+    };
+    document.getElementById('direct-counter-clockwise-apply-btn').onclick = () => {
+      let angle = document.getElementById('direct-rotation-input');
+      if (!angle.value) return;
+
+      this.view.startSpinner();
+      this.model.result = this.transformer.directRotate(this.model.original, angle.value, false);;
+      
+      this.view.closeInterfaces();
+      this.view.clearInputValues(angle);
+      this.refreshView()
+    };
+
     // Rotate image
     document.getElementById('rotation-btn').onclick = () => {
       this.view.toggleInterface('rotation-interface');

@@ -257,12 +257,12 @@ class IpImage {
 
   // Returns object with color components RGBA for the specified point. 
   getColor(point) {
-    if (point.x < 0 || point.x >= this.size.width ||
-        point.y < 0 || point.y >= this.size.height) {
+    if (point.x < 0 || point.x >= this.p5Image.width ||
+        point.y < 0 || point.y >= this.p5Image.height) {
       console.log(point.x, point.y);
     }
 
-    let index = (point.y * this.size.width + point.x) * 4;
+    let index = (point.y * this.p5Image.width + point.x) * 4;
     return { 
       r: this.p5Image.pixels[index],
       g: this.p5Image.pixels[index + 1],
@@ -270,6 +270,21 @@ class IpImage {
       a: this.p5Image.pixels[index + 3],
     };
   }
+
+  // Sets color components RGBA for the specified point. 
+  setColor(point, color) {
+    if (point.x < 0 || point.x >= this.p5Image.width ||
+        point.y < 0 || point.y >= this.p5Image.height) {
+      console.log("Error at IpImage::setColor() with indexes", point.x, point.y);
+    }
+
+    let index = (point.y * this.p5Image.width + point.x) * 4;
+    this.p5Image.pixels[index] = color.r;
+    this.p5Image.pixels[index + 1] = color.g;
+    this.p5Image.pixels[index + 2] = color.b;
+    this.p5Image.pixels[index + 3] = color.a;
+  }
+
 }
     
 export {IpImage};
